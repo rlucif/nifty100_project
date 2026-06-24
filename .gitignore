@@ -1,6 +1,17 @@
-.venv/
+# Project datasets
+data/raw/*.xlsx
+data/supporting/*.xlsx
+
+# Temporary notebook
+tempo.ipynb
+
+# Python
 __pycache__/
-.ipynb_checkpoints/
-.env
-*.db
 *.pyc
+
+# Pytest
+.pytest_cache/
+
+# Environment
+.venv/
+.env
