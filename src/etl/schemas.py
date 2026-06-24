@@ -1,0 +1,83 @@
+EXPECTED_SCHEMAS = {
+   "companies.xlsx": [
+      "id",
+      "company_logo",
+      "company_name",
+      "chart_link",
+      "about_company",
+      "website",
+      "nse_profile",
+      "bse_profile",
+      "face_value",
+      "book_value",
+      "roce_percentage",
+      "roe_percentage",
+   ],
+
+   "balancesheet.xlsx": [
+      "id",
+      "company_id",
+      "year",
+      "equity_capital",
+      "reserves",
+      "borrowings",
+      "other_liabilities",
+      "total_liabilities",
+      "fixed_assets",
+      "cwip",
+      "investments",
+      "other_asset",
+      "total_assets",
+   ],
+
+   "cashflow.xlsx": [
+      "id",
+      "company_id",
+      "year",
+      "operating_activity",
+      "investing_activity",
+      "financing_activity",
+      "net_cash_flow",
+   ],
+
+   "profitandloss.xlsx": [
+      "id",
+      "company_id",
+      "year",
+      "sales",
+      "expenses",
+      "operating_profit",
+      "opm_percentage",
+      "other_income",
+      "interest",
+      "depreciation",
+      "profit_before_tax",
+      "tax_percentage",
+      "net_profit",
+      "eps",
+      "dividend_payout",
+   ],
+
+   "analysis.xlsx": [
+      "id",
+      "company_id",
+      "compounded_sales_growth",
+      "compounded_profit_growth",
+      "stock_price_cagr",
+      "roe",
+   ],
+
+   "documents.xlsx": [
+      "id",
+      "company_id",
+      "Year",
+      "Annual_Report",
+   ],
+
+   "prosandcons.xlsx": [
+      "id",
+      "company_id",
+      "pros",
+      "cons",
+   ],
+}
