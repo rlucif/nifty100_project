@@ -114,3 +114,77 @@ CREATE TABLE prosandcons (
     pros TEXT,
     cons TEXT
 );
+
+-- =====================================================
+-- Financial Ratios
+-- =====================================================
+CREATE TABLE IF NOT EXISTS financial_ratios (
+    id INTEGER PRIMARY KEY,
+    company_id TEXT,
+    year TEXT,
+    net_profit_margin_pct REAL,
+    operating_profit_margin_pct REAL,
+    return_on_equity_pct REAL,
+    debt_to_equity REAL,
+    interest_coverage REAL,
+    asset_turnover REAL,
+    free_cash_flow_cr REAL,
+    capex_cr REAL,
+    earnings_per_share REAL,
+    book_value_per_share REAL,
+    dividend_payout_ratio_pct REAL,
+    total_debt_cr REAL,
+    cash_from_operations_cr REAL
+);
+
+-- =====================================================
+-- Market Cap
+-- =====================================================
+CREATE TABLE IF NOT EXISTS market_cap (
+    id INTEGER PRIMARY KEY,
+    company_id TEXT,
+    year INTEGER,
+    market_cap_crore REAL,
+    enterprise_value_crore REAL,
+    pe_ratio REAL,
+    pb_ratio REAL,
+    ev_ebitda REAL,
+    dividend_yield_pct REAL
+);
+
+-- =====================================================
+-- Peer Groups
+-- =====================================================
+CREATE TABLE IF NOT EXISTS peer_groups (
+    id INTEGER PRIMARY KEY,
+    peer_group_name TEXT,
+    company_id TEXT,
+    is_benchmark TEXT
+);
+
+-- =====================================================
+-- Sectors
+-- =====================================================
+CREATE TABLE IF NOT EXISTS sectors (
+    id INTEGER PRIMARY KEY,
+    company_id TEXT,
+    broad_sector TEXT,
+    sub_sector TEXT,
+    index_weight_pct REAL,
+    market_cap_category TEXT
+);
+
+-- =====================================================
+-- Stock Prices
+-- =====================================================
+CREATE TABLE IF NOT EXISTS stock_prices (
+    id INTEGER PRIMARY KEY,
+    company_id TEXT,
+    date TEXT,
+    open_price REAL,
+    high_price REAL,
+    low_price REAL,
+    close_price REAL,
+    volume INTEGER,
+    adjusted_close REAL
+);
