@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repository contains the Data Foundation layer for the Nifty100 Analytics Project.
+This repository contains the Data Foundation layer for the Nifty100 Analytics Project (Progress till D3).
 
 The primary objective of Sprint 1 is to establish a reliable, validated, and standardized data pipeline that supports future analytics, reporting, and visualization requirements.
 
@@ -133,4 +133,4 @@ Expected result:
 
 **Raj Sarania**  
 Summer Internship Program (SIP)  
-Bluestock Fintech
+Data Analyst @Bluestock Fintech
