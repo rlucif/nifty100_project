@@ -44,3 +44,13 @@ def load_all_core_files(raw_dir='data/raw'):
       datasets[file.stem] = load_excel(file)
 
    return datasets
+
+# def load_all_supporting_files(supporting_dir='data/supporting'):
+#    # Load all 5 supporting datasets.
+#    supporting_dir = Path(supporting_dir)
+#    datasets = {}
+
+#    for file in supporting_dir.glob('*.xlsx'):
+#       datasets[file.stem] = load_excel(file)
+
+#    return datasets
