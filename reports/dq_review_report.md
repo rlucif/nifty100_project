@@ -101,8 +101,8 @@ The following aspects were verified:
 
 - Financial statements were available for all reviewed companies.
 - Annual report records were present as expected.
-- The `analysis` dataset was available only for companies included in the source file.
-- The `prosandcons` dataset contained entries only for a limited number of companies, which is consistent with the source dataset.
+- The `analysis` dataset was available only for companies included in the files.
+- The `prosandcons` dataset contained entries only for a limited number of companies, which is consistent with the dataset.
 
 ---
 
