@@ -46,3 +46,58 @@ def calculate_roce(operating_profit, other_income, equity_capital, reserves, bor
    
    ebit = operating_profit + other_income
    return (ebit / capital_employed) * 100
+
+# ---------------------------------------------------------------------
+# Leverage & Efficiency Ratios
+# ---------------------------------------------------------------------
+def calculate_debt_to_equity(borrowing, equity_capital, reserves):
+   if borrowing == 0:
+      return 0
+   
+   total_equity = equity_capital + reserves
+
+   if total_equity <= 0:
+      logger.warning('Debt-to-Equity calculation skipped because total equity is less than or equal to zero')
+      return None
+   
+   return borrowing / total_equity
+
+def calculate_high_leverage_flag(debt_to_equity, sector):
+   if debt_to_equity is None:
+      return False
+   if sector is None:
+      return False
+   if sector.strip().lower() == 'financials':
+      return False
+   
+   return debt_to_equity > 5
+
+def calculate_interest_coverage(operating_profit, other_income, interest):
+   if interest == 0:
+      logger.warning('Interest Coverage calculation skipped because interest is zero')
+      return None
+   
+   ebit = operating_profit + other_income
+   return ebit / interest
+
+def calculate_icr_label(interest_coverage):
+   if interest_coverage is None:
+      return 'Debt Free'
+   
+   return None
+
+def calculate_icr_warning_flag(interest_coverage):
+   if interest_coverage is None:
+      return False
+   
+   return interest_coverage < 1.5
+
+def calculate_net_debt(borrowings, investments):
+   return borrowings - investments
+
+def calculate_asset_turnover(sales, total_assets):
+   if total_assets == 0:
+      logger.warning('Asset Turnover calculation skipped because total assets is zero')
+      return None
+   
+   return sales / total_assets
