@@ -10,7 +10,17 @@ from src.analytics.ratios import (
    calculate_icr_label,
    calculate_icr_warning_flag,
    calculate_net_debt,
-   calculate_asset_turnover
+   calculate_asset_turnover,
+   calculate_free_cash_flow,
+   calculate_fcf_concern_flag,
+   calculate_capital_allocation,
+   calculate_cfo_quality_score,
+   calculate_average_cfo_quality_score,
+   get_cfo_quality_label,
+   calculate_capex_intensity,
+   get_capex_intensity_label,
+   calculate_fcf_conversion,
+   get_fcf_conversion_label
 )
 
 
@@ -205,3 +215,124 @@ def test_calculate_asset_turnover(
       sales,
       total_assets
    ) == expected
+
+   # ---------------------------------------------------------------------
+# Free Cash Flow
+# ---------------------------------------------------------------------
+def test_calculate_free_cash_flow_positive():
+   assert calculate_free_cash_flow(100, -40) == 60
+
+
+def test_calculate_free_cash_flow_negative():
+   assert calculate_free_cash_flow(100, -150) == -50
+
+
+def test_calculate_free_cash_flow_zero():
+   assert calculate_free_cash_flow(120, 0) == 120
+
+
+# ---------------------------------------------------------------------
+# FCF Concern Flag
+# ---------------------------------------------------------------------
+def test_fcf_concern_true():
+   assert calculate_fcf_concern_flag([-10, -20, -30]) is True
+
+
+def test_fcf_concern_false():
+   assert calculate_fcf_concern_flag([10, -20, -30]) is False
+
+
+def test_fcf_concern_less_than_three_years():
+   assert calculate_fcf_concern_flag([-10, -20]) is False
+
+
+def test_fcf_concern_last_three_negative():
+   assert calculate_fcf_concern_flag([50, -10, -20, -30]) is True
+
+
+# -------------------------------------------------------
+# CFO Quality Score
+# -------------------------------------------------------
+def test_calculate_cfo_quality_score():
+   assert calculate_cfo_quality_score(1200, 1000) == 1.2
+
+
+def test_calculate_cfo_quality_score_zero_profit():
+   assert calculate_cfo_quality_score(500, 0) is None
+
+# -------------------------------------------------------
+# CapEx Intensity
+# -------------------------------------------------------
+def test_calculate_capex_intensity():
+   assert calculate_capex_intensity(-250, 5000) == 5.0
+
+def test_calculate_capex_intensity_zero_sales():
+   assert calculate_capex_intensity(-250, 0) is None
+
+# -------------------------------------------------------
+# FCF Conversion
+# -------------------------------------------------------
+def test_calculate_fcf_conversion():
+   assert calculate_fcf_conversion(600, 1000) == 60.0
+
+def test_calculate_fcf_conversion_zero_operating_profit():
+   assert calculate_fcf_conversion(600, 0) is None
+
+def test_calculate_average_cfo_quality_score():
+   scores = [1.2, 1.1, 1.0, 0.9, 0.8]
+
+   assert calculate_average_cfo_quality_score(scores) == 1.0
+
+
+def test_get_cfo_quality_label():
+   assert get_cfo_quality_label(1.2) == 'High Quality Earnings'
+   assert get_cfo_quality_label(0.8) == 'Moderate'
+   assert get_cfo_quality_label(0.4) == 'Accrual Risk'
+   assert get_cfo_quality_label(None) is None
+
+def test_get_capex_intensity_label():
+   assert get_capex_intensity_label(2.5) == 'Asset Light'
+   assert get_capex_intensity_label(5.0) == 'Moderate'
+   assert get_capex_intensity_label(12.0) == 'Capital Intensive'
+   assert get_capex_intensity_label(None) is None
+
+def test_get_fcf_conversion_label():
+   assert get_fcf_conversion_label(75) == 'Efficient'
+   assert get_fcf_conversion_label(45) == 'Moderate'
+   assert get_fcf_conversion_label(20) == 'CapEx Heavy'
+   assert get_fcf_conversion_label(None) is None
+
+def test_calculate_capital_allocation():
+   assert calculate_capital_allocation(100, -50, -20) == 'Reinvestor'
+   assert (
+      calculate_capital_allocation(100, -50, -20, 1.2)
+      == 'Shareholder Returns'
+   )
+   assert (
+      calculate_capital_allocation(100, 50, -20)
+      == 'Liquidating Assets'
+   )
+   assert (
+      calculate_capital_allocation(-100, 50, 20)
+      == 'Distress Signal'
+   )
+   assert (
+      calculate_capital_allocation(-100, -50, 20)
+      == 'Growth Funded by Debt'
+   )
+   assert (
+      calculate_capital_allocation(100, 50, 20)
+      == 'Cash Accumulator'
+   )
+   assert (
+      calculate_capital_allocation(-100, -50, -20)
+      == 'Pre-Revenue'
+   )
+   assert (
+      calculate_capital_allocation(100, -50, 20)
+      == 'Mixed'
+   )
+   assert (
+      calculate_capital_allocation(-100, 50, -20)
+      == 'Unknown Pattern'
+   )

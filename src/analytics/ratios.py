@@ -101,3 +101,103 @@ def calculate_asset_turnover(sales, total_assets):
       return None
    
    return sales / total_assets
+
+# ---------------------------------------------------------------------
+# Cash Flow Ratios
+# ---------------------------------------------------------------------
+def calculate_free_cash_flow(operating_activity, investing_activity):
+   return operating_activity + investing_activity
+
+def calculate_fcf_concern_flag(fcf_values):
+   if len(fcf_values) < 3:
+      return False
+   return all(value < 0 for value in fcf_values[-3:])
+
+def calculate_capital_allocation(
+   operating_activity,
+   investing_activity,
+   financing_activity,
+   cfo_quality_score=None):
+   cfo_positive = operating_activity >= 0
+   cfi_positive = investing_activity >= 0
+   cff_positive = financing_activity >= 0
+
+   if cfo_positive and not cfi_positive and not cff_positive:
+      if cfo_quality_score is not None and cfo_quality_score > 1:
+         return 'Shareholder Returns'
+      return 'Reinvestor'
+   if cfo_positive and cfi_positive and not cff_positive:
+      return 'Liquidating Assets'
+   if not cfo_positive and cfi_positive and cff_positive:
+      return 'Distress Signal'
+   if not cfo_positive and not cfi_positive and cff_positive:
+      return 'Growth Funded by Debt'
+   if cfo_positive and cfi_positive and cff_positive:
+      return 'Cash Accumulator'
+   if not cfo_positive and not cfi_positive and not cff_positive:
+      return 'Pre-Revenue'
+   if cfo_positive and not cfi_positive and cff_positive:
+      return 'Mixed'
+
+   return 'Unknown Pattern'
+
+def calculate_cfo_quality_score(operating_activity, net_profit):
+   if net_profit == 0:
+      logger.warning('CFO Quality Score calculation skipped because net profit is zero')
+      return None
+
+   return round(operating_activity / net_profit, 4)
+
+def calculate_average_cfo_quality_score(cfo_quality_scores):
+   valid_scores = [score for score in cfo_quality_scores if score is not None]
+   if not valid_scores:
+      logger.warning('Average CFO Quality Score calculation skipped because no valid scores are available')
+      return None
+
+   return round(sum(valid_scores) / len(valid_scores), 4)
+
+
+def get_cfo_quality_label(cfo_quality_score):
+   if cfo_quality_score is None:
+      return None
+   if cfo_quality_score > 1.0:
+      return 'High Quality Earnings'
+   if cfo_quality_score < 0.5:
+      return 'Accrual Risk'
+
+   return 'Moderate'
+
+
+def calculate_capex_intensity(investing_activity, sales):
+   if sales == 0:
+      logger.warning('CapEx Intensity calculation skipped because sales is zero')
+      return None
+
+   return round((abs(investing_activity) / sales) * 100, 2)
+
+def get_capex_intensity_label(capex_intensity):
+   if capex_intensity is None:
+      return None
+   if capex_intensity < 3:
+      return 'Asset Light'
+   if capex_intensity <= 8:
+      return 'Moderate'
+
+   return 'Capital Intensive'
+
+def calculate_fcf_conversion(free_cash_flow, operating_profit):
+   if operating_profit == 0:
+      logger.warning('FCF Conversion calculation skipped because operating profit is zero')
+      return None
+
+   return round((free_cash_flow / operating_profit) * 100, 2)
+
+def get_fcf_conversion_label(fcf_conversion):
+   if fcf_conversion is None:
+      return None
+   if fcf_conversion > 60:
+      return 'Efficient'
+   if fcf_conversion >= 30:
+      return 'Moderate'
+
+   return 'CapEx Heavy'
