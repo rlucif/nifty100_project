@@ -134,7 +134,11 @@ CREATE TABLE IF NOT EXISTS financial_ratios (
     book_value_per_share REAL,
     dividend_payout_ratio_pct REAL,
     total_debt_cr REAL,
-    cash_from_operations_cr REAL
+    cash_from_operations_cr REAL,
+    revenue_cagr_5yr REAL,
+    pat_cagr_5yr REAL,
+    eps_cagr_5yr REAL,
+    composite_quality_score REAL
 );
 
 -- =====================================================
