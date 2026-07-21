@@ -74,7 +74,9 @@ def build_master_dataframe(tables):
          tables['companies'][[
             'id',
             'book_value',
-            'face_value'
+            'face_value',
+            'roe_percentage',
+            'roce_percentage'
          ]],
          left_on='company_id',
          right_on='id',
@@ -205,6 +207,9 @@ Source requires clarification or future audit.
 def build_financial_ratios_dataframe(master_df):
    # Build the final dataframe matching the financial_ratios
    # SQLite table schema
+   # ROCE is intentionally computed for validation and audit purposes.
+   # It is not persisted because the current financial_ratios schema
+   # defined for Sprint 2 does not include a ROCE column.   
    financial_ratios_df = master_df[[
          'company_id',
          'year',
@@ -260,19 +265,19 @@ def build_financial_ratios_dataframe(master_df):
 def save_financial_ratios(connection, financial_ratios_df):
    # Refresh the financial_ratios table while preserving the database schema.
    cursor = connection.cursor()
-   cursor.execute("DELETE FROM financial_ratios")
+   cursor.execute('DELETE FROM financial_ratios')
 
    financial_ratios_df.to_sql(
-      "financial_ratios",
+      'financial_ratios',
       connection,
-      if_exists="append",
+      if_exists='append',
       index=False
    )
 
    connection.commit()
    print(
-      f"\nSaved {len(financial_ratios_df)} rows "
-      "to financial_ratios."
+      f'\nSaved {len(financial_ratios_df)} rows '
+      'to financial_ratios.'
    )
 
 def main():
@@ -285,21 +290,12 @@ def main():
 
       master_df = build_master_dataframe(tables)
       master_df = calculate_profitability_kpis(master_df)
+
       financial_ratios_df = build_financial_ratios_dataframe(master_df)
       save_financial_ratios(connection, financial_ratios_df)
+
       print()
       print(financial_ratios_df.head())
-
-      print(f'Master dataframe rows : {len(master_df)}')
-      print()
-      print(master_df[[
-                  'company_id',
-                  'year',
-                  'net_profit_margin_pct',
-                  'operating_profit_margin_pct',
-                  'return_on_equity_pct'
-            ]].head(10)
-      )
 
    finally:
       connection.close()
