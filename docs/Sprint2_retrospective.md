@@ -13,7 +13,7 @@
 
 This retrospective summarizes the decisions, technical finding, implementation outcomes, and lesson learned during Sprint 2.
 
-This document captures 'why' certain decisions were made, what technical debt remains, and the recommendations carried forward into Sprint 3.
+This document captures why certain decisions were made, what technical debt remains, and the recommendations carried forward into Sprint 3.
 
 ---
 
@@ -24,7 +24,7 @@ Sprint 2 focused on transforming validated financial statement data into a reusa
 Primary Objectives:
 
 - Develop reusable financial ratio calculation modules.
-- Populate the 'financial_ratio' SQLite table.
+- Populate the `financial_ratio` SQLite table.
 - Validate calculations against sources datasets.
 - Handle real world financial edge cases.
 - Produce a reliable analytics foundation for later platform modules.
@@ -88,7 +88,7 @@ The CAGR engine had been fully unit tested and is ready for integration when sch
 
 ## Operating Profit Margin
 
-The supplied 'opm_percentage' dataset contained widespread inconsistencies.
+The supplied `opm_percentage` dataset contained widespread inconsistencies.
 
 Decision:
 
