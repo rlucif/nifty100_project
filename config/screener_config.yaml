@@ -1,0 +1,20 @@
+filters:
+  return_on_equity_pct:
+    enabled: true
+    operator: ">="
+    values:
+      min: 15
+
+  debt_to_equity:
+    enabled: true
+    operator: "<="
+    values:
+      max: 1
+
+  free_cash_flow_cr:
+    enabled: false
+    operator: ">"
+    values:
+      min: 0
+
+presets: {}
