@@ -34,7 +34,7 @@ for file_name in FILES:
    all_failures.extend(failures)
 
 # Export Report
-save_failures(all_failures, 'validation_failures.csv')
+save_failures(all_failures, 'output/validation_failures.csv')
 print(
    f'Validation complete '
    f'{len(all_failures)} issues found'

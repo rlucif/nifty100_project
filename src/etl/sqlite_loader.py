@@ -73,7 +73,7 @@ def load_data(connection):
    connection.commit()
 
    pd.DataFrame(audit).to_csv(
-      'reports/load_audit.csv',
+      'output/load_audit.csv',
       index=False
    )
 

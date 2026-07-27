@@ -1,0 +1,77 @@
+# =====================================================================
+# N100 Financial Intelligence Platform
+#
+# Command contract from the project deliverables checklist.
+# Every target runs module-style from the repository root so that
+# "src." imports resolve.
+#
+# On Windows the virtual environment interpreter lives in Scripts/,
+# on Linux and macOS in bin/. PYTHON picks whichever exists.
+# =====================================================================
+
+ifeq ($(OS),Windows_NT)
+    PYTHON ?= .venv/Scripts/python.exe
+else
+    PYTHON ?= .venv/bin/python
+endif
+
+.PHONY: help load validate ratios audit screener peer report test clean all
+
+help:
+	@echo "N100 Financial Intelligence Platform"
+	@echo ""
+	@echo "  make load       Load all Excel files into data/nifty100.db"
+	@echo "  make validate   Run the validation framework"
+	@echo "  make ratios     Populate the financial_ratios table"
+	@echo "  make audit      Regenerate output/ratio_edge_cases.log"
+	@echo "  make screener   Run the full Sprint 3 screener pipeline"
+	@echo "  make peer       Recompute peer percentiles only"
+	@echo "  make report     Generate all Excel reports and radar charts"
+	@echo "  make test       Run the test suite"
+	@echo "  make clean      Remove caches and test artifacts"
+	@echo "  make all        load -> ratios -> screener -> test"
+
+# ---------------------------------------------------------------------
+# Sprint 1 - Data foundation
+# ---------------------------------------------------------------------
+load:
+	$(PYTHON) -m src.etl.sqlite_loader
+
+validate:
+	$(PYTHON) -m src.etl.run_validation
+
+# ---------------------------------------------------------------------
+# Sprint 2 - Ratio engine
+# ---------------------------------------------------------------------
+ratios:
+	$(PYTHON) -m src.etl.ratio_engine
+
+audit:
+	$(PYTHON) -m src.etl.ratio_edge_case_audit
+
+# ---------------------------------------------------------------------
+# Sprint 3 - Screener and peer comparison
+# ---------------------------------------------------------------------
+screener:
+	$(PYTHON) -m src.screener.run_screener
+
+peer:
+	$(PYTHON) -m src.analytics.peer
+
+report:
+	$(PYTHON) -m src.screener.export
+	$(PYTHON) -m src.reports.peer_comparison
+	$(PYTHON) -m src.reports.radar_charts
+
+# ---------------------------------------------------------------------
+# Quality gates
+# ---------------------------------------------------------------------
+test:
+	$(PYTHON) -m pytest -q
+
+clean:
+	@echo "Removing caches and test artifacts. The database is untouched."
+	-@find . -type d -name "__pycache__" -not -path "./.venv/*" -exec rm -rf {} + 2>/dev/null || true
+	-@rm -rf .pytest_cache .ruff_cache 2>/dev/null || true
+
+all: load ratios screener test

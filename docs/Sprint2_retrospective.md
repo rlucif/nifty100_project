@@ -147,7 +147,6 @@ Decision:
 
 # Financial Institutions
 
-git
 Debt-to-Equity warning flags are suppressed for Banks, NBFCs and Insurance companies where high leverage is structurally normal.
 
 ROCE calculations are retained for validation but are not currently persisted because the existing schema does not contain a ROCE field.
@@ -194,8 +193,14 @@ The following items are intentionally deferred to future sprints.
 
 ## CAGR Integration
 
-The CAGR analytics module has been implemented and fully tested.
-Integration into the ETL pipeline has been deferred because the current `financial_ratios` schema does not contains CARG fields.
+~~The CAGR analytics module has been implemented and fully tested.
+Integration into the ETL pipeline has been deferred because the current `financial_ratios` schema does not contains CARG fields.~~
+
+**Closed on Day 15.** This deferral was based on a mistaken premise.
+`src/etl/schema.sql` already declared `revenue_cagr_5yr`, `pat_cagr_5yr`,
+`eps_cagr_5yr` and `composite_quality_score`; only the live database file
+was missing them. The columns were added and populated by
+`ratio_engine.py`. See the Sprint 3 retrospective.
 
 ---
 
