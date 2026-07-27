@@ -1,6 +1,3 @@
-# ----------------------------------------------------------
-# Screener Configuration
-#
 # This file defines analyst-editable screening thresholds and the six
 # preset screeners required by Sprint 3.
 #
@@ -14,10 +11,8 @@
 #   presets : the six preset screeners, each with its own thresholds
 # ----------------------------------------------------------
 
-# ----------------------------------------------------------
 # Metric metadata
 # direction: higher_is_better | lower_is_better
-# ----------------------------------------------------------
 metrics:
   return_on_equity_pct:
     label: "ROE %"
@@ -71,12 +66,9 @@ metrics:
     label: "Revenue CAGR 3yr %"
     direction: higher_is_better
 
-# ----------------------------------------------------------
 # Custom screener defaults
-#
 # All 15 filterable metrics required by Sprint 3 Day 15.
 # Enable the ones an analyst wants and adjust the threshold.
-# ----------------------------------------------------------
 filters:
   return_on_equity_pct:
     enabled: false
@@ -168,14 +160,11 @@ filters:
     threshold:
       min: 5000
 
-# ----------------------------------------------------------
 # Preset screeners
-#
 # Thresholds are taken from the Sprint 3 Day 16 specification.
 # Each preset carries its own thresholds because the same metric is
 # screened at different levels by different investment styles
 # (Quality Compounder wants ROE > 15, Debt-Free Blue Chip wants > 12).
-# ----------------------------------------------------------
 presets:
   quality_compounder:
     label: "Quality Compounder"
@@ -201,15 +190,7 @@ presets:
   value_pick:
     label: "Value Pick"
     description: "Cheap on earnings and book value with a dividend."
-    # DATA LIMITATION - returns 2 companies, below the 5-50 exit range.
-    # P/E and P/B come from the simulated market_cap dataset, where the
-    # two are uncorrelated (r = -0.11). In real markets they move
-    # together, so a company cheap on earnings is usually also cheap on
-    # book. 15 companies pass P/E < 20 and 9 pass P/B < 3.0, but only 2
-    # pass both. The thresholds below are the Sprint 3 specification and
-    # are correct for live market data.
-    # To satisfy the exit criterion on the simulated dataset, relax to
-    # pe_ratio max 30 and pb_ratio max 6.0 (returns 13 companies).
+    # DATA LIMITATION - returns 2 companies, below the 5-50 exit range. P/E and P/B come from the simulated market_cap dataset, where the two are uncorrelated (r = -0.11). In real markets they move together, so a company cheap on earnings is usually also cheap on book. 15 companies pass P/E < 20 and 9 pass P/B < 3.0, but only 2 pass both. The thresholds below are the Sprint 3 specification and are correct for live market data. To satisfy the exit criterion on the simulated dataset, relax to pe_ratio max 30 and pb_ratio max 6.0 (returns 13 companies).
     filters:
       pe_ratio:
         operator: "<"
@@ -265,11 +246,7 @@ presets:
   debt_free_blue_chip:
     label: "Debt-Free Blue Chip"
     description: "No borrowings, solid returns, meaningful scale."
-    # DATA LIMITATION - returns 2 companies, below the 5-50 exit range.
-    # Only 3 of 92 companies report literally zero borrowings in their
-    # latest year. Relaxing debt_to_equity to "<" 0.05, the conventional
-    # market definition of debt free, returns 16 companies.
-    # The equality test below is the Sprint 3 specification.
+    # DATA LIMITATION - returns 2 companies, below the 5-50 exit range. Only 3 of 92 companies report literally zero borrowings in their latest year. Relaxing debt_to_equity to "<" 0.05, the conventional market definition of debt free, returns 16 companies. The equality test below is the Sprint 3 specification.
     filters:
       debt_to_equity:
         operator: "=="
@@ -301,13 +278,9 @@ presets:
         threshold:
           max: true
 
-# ----------------------------------------------------------
 # Composite quality score
-#
 # Sprint 3 Day 17. Weights sum to 100.
-# Each component is winsorised at the P10/P90 percentile before being
-# scaled to 0-100, so a single extreme value cannot dominate the score.
-# ----------------------------------------------------------
+# Each component is winsorised at the P10/P90 percentile before being scaled to 0-100, so a single extreme value cannot dominate the score.
 composite_score:
   winsorise_lower_percentile: 10
   winsorise_upper_percentile: 90
