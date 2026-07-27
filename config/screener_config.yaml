@@ -67,7 +67,6 @@ metrics:
     direction: higher_is_better
 
 # Custom screener defaults
-# All 15 filterable metrics required by Sprint 3 Day 15.
 # Enable the ones an analyst wants and adjust the threshold.
 filters:
   return_on_equity_pct:
@@ -161,10 +160,6 @@ filters:
       min: 5000
 
 # Preset screeners
-# Thresholds are taken from the Sprint 3 Day 16 specification.
-# Each preset carries its own thresholds because the same metric is
-# screened at different levels by different investment styles
-# (Quality Compounder wants ROE > 15, Debt-Free Blue Chip wants > 12).
 presets:
   quality_compounder:
     label: "Quality Compounder"
@@ -279,7 +274,6 @@ presets:
           max: true
 
 # Composite quality score
-# Sprint 3 Day 17. Weights sum to 100.
 # Each component is winsorised at the P10/P90 percentile before being scaled to 0-100, so a single extreme value cannot dominate the score.
 composite_score:
   winsorise_lower_percentile: 10
