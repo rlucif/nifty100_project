@@ -4,7 +4,7 @@ Production-grade analytics for the 92 Nifty 100 companies present in the
 supplied datasets: ETL pipeline, financial ratio engine, investment
 screener, composite health scoring and peer comparison.
 
-**Progress: Sprint 4 complete (Day 28 of 45).**
+**Progress: Sprint 5 complete (Day 35 of 45).**
 
 ---
 
@@ -30,11 +30,21 @@ screener, composite health scoring and peer comparison.
 │   ├── screener_output.xlsx
 │   ├── peer_comparison.xlsx
 │   ├── valuation_summary.xlsx
-│   └── valuation_flags.csv
+│   ├── valuation_flags.csv
+│   ├── analysis_parsed.csv
+│   ├── parse_failures.csv
+│   ├── pros_cons_generated.csv
+│   ├── cashflow_intelligence.xlsx
+│   ├── distress_alerts.csv
+│   ├── pattern_changes.csv
+│   └── skipped_tearsheets.csv
 │
 ├── reports/
 │   ├── dq_review_report.md
-│   └── radar_charts/            92 per-company radar PNGs
+│   ├── radar_charts/            92 per-company radar PNGs
+│   ├── tearsheets/              91 two-page company PDFs
+│   ├── sector/                  11 sector PDFs
+│   └── portfolio/               portfolio_summary.pdf
 │
 ├── src/
 │   ├── analytics/
@@ -44,6 +54,11 @@ screener, composite health scoring and peer comparison.
 │   │   ├── periods.py           Financial period parsing and ordering
 │   │   ├── peer.py              Peer percentile ranking
 │   │   └── valuation.py         FCF yield and overvaluation flags
+│   │
+│   ├── nlp/
+│   │   ├── parser.py            Analysis text parsing
+│   │   ├── features.py          Per-company history for the rules
+│   │   └── pros_cons_generator.py  24 rules + relative fallback
 │   │
 │   ├── etl/
 │   │   ├── sqlite_loader.py     Excel to SQLite
@@ -67,7 +82,12 @@ screener, composite health scoring and peer comparison.
 │   │
 │   └── reports/
 │       ├── peer_comparison.py   peer_comparison.xlsx
-│       └── radar_charts.py      Radar chart generation
+│       ├── radar_charts.py      Radar chart generation
+│       ├── cashflow_intelligence.py
+│       ├── tearsheet.py         2-page company PDF
+│       ├── sector_report.py     Per-sector PDF
+│       ├── batch_reports.py     Day 34 batch runner
+│       └── portfolio_summary.py Portfolio PDF
 │
 ├── tests/
 ├── Makefile
@@ -116,6 +136,9 @@ pip install -r requirements.txt
 | `make screener` | Run the full Sprint 3 screener pipeline |
 | `make peer` | Recompute peer percentiles only |
 | `make valuation` | Generate `valuation_summary.xlsx` and the flags CSV |
+| `make nlp` | Parse the analysis text and generate pros/cons |
+| `make cashflow` | Generate `cashflow_intelligence.xlsx` and alerts |
+| `make tearsheets` | Batch build the company, sector and portfolio PDFs |
 | `make report` | Generate all Excel reports and radar charts |
 | `make dashboard` | Launch the Streamlit dashboard on `localhost:8501` |
 | `make test` | Run the test suite |
@@ -160,6 +183,17 @@ python -m src.screener.run_screener
 - Valuation module: FCF yield, sector median P/E and
   Caution / Discount / Fair flags
 
+### Sprint 5 - Intelligence, NLP & PDF Reports
+
+- Analysis text parser, which independently confirmed the CAGR engine
+  against the vendor's published figures to within 1.4 points
+- 24 rule pros and cons generator with confidence scores, plus a
+  sector-relative fallback so every company is covered
+- Cash flow intelligence: CFO quality, CapEx intensity, distress and
+  deleveraging flags, capital allocation patterns
+- 91 two-page company tearsheets, 11 sector reports and a 93 page
+  portfolio summary, all built with ReportLab
+
 ---
 
 ## Running the Dashboard
@@ -200,6 +234,15 @@ screen explains this in place.
 - The supplied `companies.xlsx` is truncated at 92 rows, so eight tickers
   appear in the financial statements with no company master record. This
   and other source defects are documented in `docs/Sprint3_retrospective.md`.
+- The `analysis` table covers **5 companies**, not 92, so
+  `output/analysis_parsed.csv` is a 5 company sample. It is used as an
+  independent check on the CAGR engine rather than as a data source.
+- `prosandcons` covers 16 companies, so every statement in
+  `output/pros_cons_generated.csv` is generated from financial rules.
+- The distress flag marks banks and NBFCs whose lending growth produces
+  negative operating cash flow. `output/distress_alerts.csv` carries a
+  `structurally_normal_for_sector` column that separates those from
+  genuine concerns. See `docs/Sprint5_retrospective.md`.
 
 ---
 
@@ -212,7 +255,7 @@ python -m pytest -q
 Expected result:
 
 ```text
-183 passed
+229 passed
 ```
 
 This includes the 14 data quality rule tests required by the Sprint 3
