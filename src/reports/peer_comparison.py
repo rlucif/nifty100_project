@@ -1,13 +1,4 @@
 '''
-Peer comparison Excel report for the N100 Financial Intelligence Platform.
-
-Sprint 3 Day 20 deliverable D-09: output/peer_comparison.xlsx with one
-sheet per peer group.
-
-Each sheet carries the 10 ranked metrics as a value column plus a
-percentile rank column, giving 20 metric columns in total, followed by
-a peer group median summary row.
-
 Colour coding of percentile cells
    green   >= 75th percentile
    yellow  25th to 75th percentile

@@ -1,28 +1,3 @@
-'''
-Radar charts for the N100 Financial Intelligence Platform.
-
-Sprint 3 Day 19 deliverable D-10: one 8-axis radar chart per company,
-exported as PNG to reports/radar_charts/.
-
-Axes
-   ROE, ROCE, NPM, D/E, FCF score, PAT CAGR 5yr, Revenue CAGR 5yr and
-   the composite quality score.
-
-Every axis is placed on a common 0-100 scale using the same P10/P90
-winsorisation the composite score uses, because the raw units are not
-comparable: an ROE of 30 and a D/E of 0.3 cannot share a radius. The
-D/E axis is inverted so that, like every other axis, further from the
-centre is better.
-
-Reference overlay
-   Companies in a peer group are drawn against their peer group average.
-   The 37 companies with no peer group are drawn against the Nifty 100
-   average instead, and the chart is labelled accordingly.
-
-Run with:
-   python -m src.reports.radar_charts
-'''
-
 import sqlite3
 from pathlib import Path
 
@@ -139,8 +114,6 @@ def _draw_radar(axis_labels, company_values, reference_values,
    axes.set_ylim(0, 100)
    axes.set_yticks([20, 40, 60, 80, 100])
    axes.set_yticklabels(['20', '40', '60', '80', '100'], fontsize=8)
-   # Park the radial scale midway between two spokes so it does not
-   # print on top of an axis label.
    axes.set_rlabel_position(22.5)
    axes.grid(color='#BFBFBF', linewidth=0.6)
 
