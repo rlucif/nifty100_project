@@ -1,16 +1,8 @@
-'''
-CAGR calculations for the N100 Financial Intelligence Platform.
-This module contains reusable functions for computing revenue,
-PAT and EPS CAGR values across different time windows.
-'''
-
 import logging
 
 logger = logging.getLogger(__name__)
 
-# ---------------------------------------------------------------------
 # CAGR Engine
-# ---------------------------------------------------------------------
 def calculate_cagr(start_value, end_value, years):
    if years <= 0:
       logger.warning('CAGR calculation skipped because years is less than or equal to zero')
