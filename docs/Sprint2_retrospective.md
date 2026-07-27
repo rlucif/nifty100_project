@@ -147,6 +147,7 @@ Decision:
 
 # Financial Institutions
 
+git
 Debt-to-Equity warning flags are suppressed for Banks, NBFCs and Insurance companies where high leverage is structurally normal.
 
 ROCE calculations are retained for validation but are not currently persisted because the existing schema does not contain a ROCE field.
