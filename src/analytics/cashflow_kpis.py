@@ -1,21 +1,7 @@
-'''
-Cash flow KPIs for the N100 Financial Intelligence Platform.
-
-Sprint 2 Day 11 deliverable: free cash flow, CFO quality score,
-CapEx intensity, FCF conversion and the eight-pattern capital
-allocation classifier.
-
-These functions were originally written inside src/analytics/ratios.py.
-They live here to match the Sprint 2 deliverable list; ratios.py
-re-exports them so existing imports keep working.
-'''
-
 import logging
-
 logger = logging.getLogger(__name__)
 
-# Sign combinations of (CFO, CFI, CFF) mapped to their capital
-# allocation pattern label.
+# Sign combinations of (CFO, CFI, CFF) mapped to their capital allocation pattern label.
 CAPITAL_ALLOCATION_PATTERNS = {
    (True, False, False): 'Reinvestor',
    (True, True, False): 'Liquidating Assets',
@@ -27,9 +13,7 @@ CAPITAL_ALLOCATION_PATTERNS = {
 }
 
 
-# ---------------------------------------------------------------------
 # Free Cash Flow
-# ---------------------------------------------------------------------
 def calculate_free_cash_flow(operating_activity, investing_activity):
    # Negative free cash flow is a valid business outcome, not an error.
    return operating_activity + investing_activity
@@ -42,9 +26,7 @@ def calculate_fcf_concern_flag(fcf_values):
    return all(value < 0 for value in fcf_values[-3:])
 
 
-# ---------------------------------------------------------------------
 # Capital Allocation
-# ---------------------------------------------------------------------
 def calculate_capital_allocation(
    operating_activity,
    investing_activity,
@@ -56,8 +38,7 @@ def calculate_capital_allocation(
       financing_activity >= 0
    )
 
-   # A reinvestor with CFO/PAT above 1.0 is returning cash to
-   # shareholders rather than funding growth.
+   # A reinvestor with CFO/PAT above 1.0 is returning cash to shareholders rather than funding growth.
    if signs == (True, False, False):
       if cfo_quality_score is not None and cfo_quality_score > 1:
          return 'Shareholder Returns'
@@ -75,9 +56,7 @@ def get_cash_flow_sign(value):
    return '+' if value >= 0 else '-'
 
 
-# ---------------------------------------------------------------------
 # CFO Quality
-# ---------------------------------------------------------------------
 def calculate_cfo_quality_score(operating_activity, net_profit):
    if net_profit == 0:
       logger.debug(
@@ -113,9 +92,7 @@ def get_cfo_quality_label(cfo_quality_score):
    return 'Moderate'
 
 
-# ---------------------------------------------------------------------
 # CapEx Intensity
-# ---------------------------------------------------------------------
 def calculate_capex_intensity(investing_activity, sales):
    if sales == 0:
       logger.debug(
@@ -137,9 +114,7 @@ def get_capex_intensity_label(capex_intensity):
    return 'Capital Intensive'
 
 
-# ---------------------------------------------------------------------
 # FCF Conversion
-# ---------------------------------------------------------------------
 def calculate_fcf_conversion(free_cash_flow, operating_profit):
    if operating_profit == 0:
       logger.debug(
