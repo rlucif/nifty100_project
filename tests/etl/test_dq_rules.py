@@ -71,9 +71,7 @@ def financial_ratios(connection):
    return pd.read_sql('SELECT * FROM financial_ratios', connection)
 
 
-# ---------------------------------------------------------------------
 # Rules 1-8: Sprint 1 validator rules
-# ---------------------------------------------------------------------
 def test_dq_rule_01_required_columns_present():
    frame = pd.DataFrame({'company_id': ['TCS'], 'year': ['Mar 2024']})
 
@@ -135,9 +133,7 @@ def test_dq_rule_08_unexpected_columns_flagged():
    assert check_unexpected_columns(frame, ['company_id']) != []
 
 
-# ---------------------------------------------------------------------
 # Rules 9-14: delivered database integrity
-# ---------------------------------------------------------------------
 def test_dq_rule_09_financial_ratios_row_count(financial_ratios):
    # Sprint 2 exit criterion: at least 1,100 company-year rows.
    assert len(financial_ratios) >= MINIMUM_RATIO_ROWS
@@ -162,15 +158,9 @@ def test_dq_rule_11_no_kpi_column_is_entirely_null(financial_ratios):
 
 
 def test_dq_rule_12_every_ratio_company_exists(connection, financial_ratios):
-   # The supplied companies.xlsx is truncated: it carries 92 rows and
-   # stops part way through the alphabet, so the financial statements
-   # reference tickers that have no company master record. This is a
-   # source data defect recorded in the Sprint 2 audit, not a pipeline
-   # defect, so the two known orphans are accepted. Any NEW orphan is a
-   # regression and fails this rule.
+   # The supplied companies.xlsx is truncated: it carries 92 rows and stops part way through the alphabet, so the financial statements reference tickers that have no company master record. This is a source data defect recorded in the Sprint 2 audit, not a pipeline defect, so the two known orphans are accepted. Any NEW orphan is a regression and fails this rule.
    companies = pd.read_sql('SELECT id FROM companies', connection)
    orphans = set(financial_ratios['company_id']) - set(companies['id'])
-
    unexpected = orphans - KNOWN_ORPHAN_COMPANY_IDS
 
    assert unexpected == set(), (
@@ -192,5 +182,4 @@ def test_dq_rule_14_peer_percentiles_cover_all_groups(connection):
       'SELECT DISTINCT peer_group_name FROM peer_percentiles',
       connection
    )
-
    assert len(percentiles) == EXPECTED_PEER_GROUPS
