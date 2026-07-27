@@ -1,29 +1,7 @@
-'''
-Screener Excel export for the N100 Financial Intelligence Platform.
-
-Sprint 3 Day 17 deliverable D-07: output/screener_output.xlsx with one
-sheet per preset, 20 KPI columns, sorted by composite quality score
-descending, and threshold cells colour-coded.
-
-Colour coding
-   green  the cell meets the preset threshold for that metric
-   red    the cell fails the threshold
-
-A red cell in a returned row is not a bug. It marks a company that was
-admitted by a documented business rule rather than by the raw number:
-a Financials company exempt from the D/E ceiling, or a Debt Free
-company whose interest coverage is infinite.
-
-Run with:
-   python -m src.screener.export
-'''
-
 from pathlib import Path
-
 import pandas as pd
 from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.utils import get_column_letter
-
 from src.screener.engine import ScreenerEngine
 from src.screener.universe import build_universe
 
@@ -187,7 +165,6 @@ def export_screener_output(universe_df=None, output_path=OUTPUT_PATH):
 
    destination = Path(output_path)
    destination.parent.mkdir(parents=True, exist_ok=True)
-
    summary_rows = []
 
    with pd.ExcelWriter(destination, engine='openpyxl') as writer:
@@ -222,7 +199,6 @@ def export_screener_output(universe_df=None, output_path=OUTPUT_PATH):
       _write_summary_sheet(writer, summary_rows)
 
    print(f'\nWrote {destination}')
-
    return destination
 
 

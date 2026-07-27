@@ -1,30 +1,5 @@
-'''
-Sprint 3 pipeline runner for the N100 Financial Intelligence Platform.
-
-Executes the full screener and peer comparison chain in dependency
-order and reports the Sprint 3 exit criteria:
-
-   1. Build the screening universe (latest year per company)
-   2. Compute composite quality scores and persist them
-   3. Export output/screener_output.xlsx        (D-07)
-   4. Compute peer percentiles into SQLite      (Day 18)
-   5. Export output/peer_comparison.xlsx        (D-09)
-   6. Export reports/radar_charts/              (D-10)
-
-composite_quality_score is written back to financial_ratios for the
-latest year of each company only. The score is cross-sectional: it
-ranks a company against the rest of the index as it stands today, so
-back-filling it onto historical rows would imply a comparison that was
-never made.
-
-Run with:
-   python -m src.screener.run_screener
-'''
-
 import sqlite3
-
 import pandas as pd
-
 from src.analytics.peer import (
    build_peer_percentiles,
    load_peer_groups,
@@ -37,7 +12,6 @@ from src.screener.export import export_screener_output
 from src.screener.universe import build_universe
 
 DB_PATH = 'data/nifty100.db'
-
 MIN_PRESET_RESULTS = 5
 MAX_PRESET_RESULTS = 50
 

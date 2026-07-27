@@ -1,16 +1,9 @@
 '''
-Screening universe builder for the N100 Financial Intelligence Platform.
-
 The screener needs metrics that live in four different tables:
-
    financial_ratios  ratio engine output (Sprint 2)
    profitandloss     sales and net profit
    market_cap        P/E, P/B, dividend yield, market cap  (SIMULATED)
    sectors           broad_sector, needed for the Financials D/E rule
-
-This module produces one row per company at its most recent financial
-year, with every metric the screener, composite score and peer engine
-need already joined and derived.
 
 Note: market_cap and stock_prices are simulated datasets. Any report
 built on P/E, P/B, dividend yield or market cap must label them
@@ -88,8 +81,6 @@ def load_source_frames(connection):
 
 
 def _cagr(start_value, end_value, years):
-   # Local CAGR that mirrors src/analytics/cagr.py edge case rules but
-   # works on vectors of history rather than single rows.
    if pd.isna(start_value) or pd.isna(end_value):
       return None
    if start_value == 0 or start_value < 0 or end_value < 0:
@@ -99,9 +90,6 @@ def _cagr(start_value, end_value, years):
 
 
 def build_history_derivations(ratios_df, profitandloss_df):
-   # Derived metrics that need more than one year of history:
-   # the 3-year revenue CAGR, the 5-year FCF CAGR and whether
-   # debt-to-equity is falling year over year.
    ratio_history = deduplicate_company_years(ratios_df)
    ratio_history = add_period_columns(ratio_history)
    ratio_history = ratio_history[ratio_history['period_sort_key'] > 0]
@@ -203,8 +191,7 @@ def build_universe(connection=None):
       how='left'
    )
 
-   # ROCE is required by the composite score but Sprint 2 deliberately
-   # did not persist it, so it is recomputed here.
+   # ROCE is required by the composite score but Sprint 2 deliberately did not persist it, so it is recomputed here.
    universe_df['return_on_capital_employed_pct'] = universe_df.apply(
       lambda row: calculate_roce(
          row['operating_profit'],

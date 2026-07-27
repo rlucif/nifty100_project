@@ -1,11 +1,4 @@
 '''
------------------------------------------------------------
-Screener Engine
-
-Generic screening engine that applies configurable financial filters
-defined in config/screener_config.yaml, plus the composite quality
-score required by Sprint 3 Day 17.
-
 This engine serves as the foundation for:
 - Preset Screeners
 - Custom Screeners
@@ -28,7 +21,6 @@ Business rules implemented here rather than in the config file:
 
 3. Missing values
    For every other metric a missing value fails the filter.
-----------------------------------------------------------
 '''
 
 import operator
@@ -65,9 +57,7 @@ class ScreenerEngine:
       self.config_path = Path(config_path)
       self.config = {}
 
-   # ------------------------------------------------------------------
    # Configuration
-   # ------------------------------------------------------------------
    def load_config(self):
       # Load screener configuration
       with self.config_path.open('r', encoding='utf-8') as file:
@@ -137,9 +127,7 @@ class ScreenerEngine:
                f"{column}: 'between' needs both 'min' and 'max'"
             )
 
-   # ------------------------------------------------------------------
    # Filtering
-   # ------------------------------------------------------------------
    def _build_mask(self, dataframe, column, filter_config):
       # Boolean mask for one metric, including the business rules.
       operator_name = filter_config['operator']
@@ -156,12 +144,9 @@ class ScreenerEngine:
          operation = self.OPERATOR_MAP[operator_name]
          mask = operation(dataframe[column], value)
 
-      # A missing metric fails the filter unless a rule below says
-      # otherwise.
       mask = mask.fillna(False).astype(bool)
 
-      # Rule 2: Debt Free companies have no interest expense, so their
-      # coverage ratio is infinite and passes any minimum.
+      # Rule 2
       if column == 'interest_coverage':
          mask = mask | dataframe[column].isna()
 
@@ -174,8 +159,6 @@ class ScreenerEngine:
       return mask
 
    def apply_filters(self, dataframe, filters=None):
-      # Apply filters to a dataframe.
-      # Defaults to the enabled filters in the custom screener section.
       self._ensure_config()
       self.validate_config()
 
@@ -235,16 +218,10 @@ class ScreenerEngine:
          for preset_name in self.preset_names()
       }
 
-   # ------------------------------------------------------------------
    # Composite quality score (Sprint 3 Day 17)
-   # ------------------------------------------------------------------
    def _score_series(self, series, lower_percentile, upper_percentile,
                      higher_is_better=True):
       # Winsorise at P10/P90 then scale to 0-100.
-      #
-      # Winsorisation caps extreme readings before scaling, so one
-      # company with a 4700% ROE cannot compress everyone else into a
-      # single point at the bottom of the range.
       numeric = pd.to_numeric(series, errors='coerce')
       valid = numeric.dropna()
 
@@ -264,16 +241,10 @@ class ScreenerEngine:
       if not higher_is_better:
          scaled = 100 - scaled
 
-      # A metric that is missing carries no information either way, so
-      # it scores neutrally rather than being punished as a zero.
       return scaled.fillna(50.0)
 
    def calculate_composite_score(self, dataframe, sector_relative=False):
       # Composite quality score on a 0-100 scale.
-      #
-      # sector_relative=True normalises within each broad_sector so the
-      # score reflects performance against sector peers rather than
-      # against the whole index.
       self._ensure_config()
 
       score_config = self.config['composite_score']
@@ -286,9 +257,6 @@ class ScreenerEngine:
 
       working_df = dataframe.copy()
 
-      # Debt Free companies have no interest expense. Give them the best
-      # coverage reading available so the leverage component rewards
-      # them rather than treating them as missing data.
       coverage = pd.to_numeric(
          working_df['interest_coverage'],
          errors='coerce'
