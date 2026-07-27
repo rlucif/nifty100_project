@@ -1,12 +1,3 @@
-'''
-Day 6 - Data Quality Review
-
-Performs post-load verification of the SQLite database by checking:
-1. Database connectivity
-2. Table existence
-3. Row count verification
-'''
-
 import sqlite3
 from pathlib import Path
 
