@@ -12,8 +12,8 @@ else
     PYTHON ?= .venv/bin/python
 endif
 
-.PHONY: help load validate ratios audit screener peer valuation report \
-        dashboard api test clean all
+.PHONY: help load validate ratios audit screener peer valuation nlp \
+        cashflow tearsheets report dashboard api test clean all
 
 help:
 	@echo "N100 Financial Intelligence Platform"
@@ -25,7 +25,10 @@ help:
 	@echo "  make screener   Run the full Sprint 3 screener pipeline"
 	@echo "  make peer       Recompute peer percentiles only"
 	@echo "  make valuation  Generate valuation_summary.xlsx and flags"
-	@echo "  make report     Generate all Excel reports and radar charts"
+	@echo "  make nlp        Parse analysis text and generate pros/cons"
+	@echo "  make cashflow   Generate cashflow_intelligence.xlsx and alerts"
+	@echo "  make tearsheets Batch build company and sector PDFs"
+	@echo "  make report     Generate every Excel, chart and PDF output"
 	@echo "  make dashboard  Launch the Streamlit dashboard on :8501"
 	@echo "  make test       Run the test suite"
 	@echo "  make clean      Remove caches and test artifacts"
@@ -62,6 +65,23 @@ report:
 	$(PYTHON) -m src.screener.export
 	$(PYTHON) -m src.reports.peer_comparison
 	$(PYTHON) -m src.reports.radar_charts
+	$(PYTHON) -m src.reports.cashflow_intelligence
+	$(PYTHON) -m src.reports.batch_reports
+	$(PYTHON) -m src.reports.portfolio_summary
+
+# ---------------------------------------------------------------------
+# Sprint 5 - Intelligence, NLP and PDF reports
+# ---------------------------------------------------------------------
+nlp:
+	$(PYTHON) -m src.nlp.parser
+	$(PYTHON) -m src.nlp.pros_cons_generator
+
+cashflow:
+	$(PYTHON) -m src.reports.cashflow_intelligence
+
+tearsheets:
+	$(PYTHON) -m src.reports.batch_reports
+	$(PYTHON) -m src.reports.portfolio_summary
 
 # ---------------------------------------------------------------------
 # Sprint 4 - Dashboard and valuation
