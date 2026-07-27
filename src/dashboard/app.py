@@ -22,7 +22,7 @@ from src.dashboard.utils.ui import simulated_note  # noqa: E402
 
 st.set_page_config(
    page_title='Nifty 100 Analytics',
-   page_icon='📊',
+   page_icon='https://bluestock.in/static/assets/logo/dp.jpg',
    layout='wide',
    initial_sidebar_state='expanded'
 )
