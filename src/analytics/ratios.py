@@ -1,15 +1,7 @@
-'''
-Financial ratio calculations for the N100 Financial Intelligence Platform: This module contains reusable functions for computing profitability
-ratios used throughout the analytics engine.
-'''
-
 import logging
-
 logger = logging.getLogger(__name__)
 
-# ---------------------------------------------------------------------
 # Profitability Ratios
-# ---------------------------------------------------------------------
 def calculate_net_profit_margin(net_profit, sales):
    if sales == 0:
       logger.debug('NPM calculation skipped because sales is zero')
@@ -39,6 +31,12 @@ def calculate_roe(net_profit, equity_capital, reserves):
    return (net_profit / total_equity) * 100
 
 def calculate_roce(operating_profit, other_income, equity_capital, reserves, borrowings):
+   # Banks such as PNB report no operating profit at all, and the truncated company master leaves some balance sheet rows empty, so any input can arrive missing. Return None rather than raising.
+   inputs = (operating_profit, other_income, equity_capital, reserves, borrowings)
+   if any(value is None or value != value for value in inputs):
+      logger.debug('ROCE calculation skipped because an input is missing')
+      return None
+
    capital_employed = equity_capital + reserves + borrowings
    if capital_employed <= 0:
       logger.debug('ROCE calculation skipped because capital employed is less than or equal to zero')
@@ -47,9 +45,7 @@ def calculate_roce(operating_profit, other_income, equity_capital, reserves, bor
    ebit = operating_profit + other_income
    return (ebit / capital_employed) * 100
 
-# ---------------------------------------------------------------------
 # Leverage & Efficiency Ratios
-# ---------------------------------------------------------------------
 def calculate_debt_to_equity(borrowing, equity_capital, reserves):
    if borrowing == 0:
       return 0
@@ -102,12 +98,9 @@ def calculate_asset_turnover(sales, total_assets):
    
    return sales / total_assets
 
-# ---------------------------------------------------------------------
 # Cash Flow Ratios
 # ---------------------------------------------------------------------
-# The cash flow KPIs moved to src/analytics/cashflow_kpis.py to match the
-# Sprint 2 Day 11 deliverable list. They are re-exported here so existing
-# imports from src.analytics.ratios continue to work.
+# The cash flow KPIs moved to src/analytics/cashflow_kpis.py to match the Sprint 2 Day 11 deliverable list. They are re-exported here so existing
 from src.analytics.cashflow_kpis import (  # noqa: E402,F401
    calculate_free_cash_flow,
    calculate_fcf_concern_flag,
