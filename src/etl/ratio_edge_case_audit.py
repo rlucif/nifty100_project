@@ -1,11 +1,4 @@
 '''
-Ratio Edge Case Audit for the N100 Financial Intelligence Platform.
-
-Sprint 2 Day 13 deliverable. Regenerates output/ratio_edge_cases.log by
-cross-checking the computed ratio engine output against the snapshot
-values supplied in companies.xlsx, and by categorising every edge case
-the engine handled rather than calculated.
-
 Every anomaly is categorised as one of:
    DATA SOURCE ISSUE   - the supplied dataset disagrees with itself
    VERSION DIFFERENCE  - snapshot captured at a different point in time
@@ -25,20 +18,17 @@ from src.analytics.periods import deduplicate_company_years, latest_rows
 DB_PATH = 'data/nifty100.db'
 LOG_PATH = 'output/ratio_edge_cases.log'
 
-# A snapshot within this many percentage points of the computed value is
-# treated as agreement rather than an anomaly.
+# A snapshot within this many percentage points of the computed value is treated as agreement rather than an anomaly.
 ANOMALY_TOLERANCE_PCT = 5.0
 
 SEPARATOR = '-' * 60
 
-# Standing engineering decisions recorded during the Day 13 investigation.
-# Retained verbatim so the regenerated log stays a complete audit record.
 STANDING_DECISIONS = '''
 Financial Sector Debt-to-Equity
 Status : Implemented
 Category : DATA SOURCE ISSUE
 
-Finding:
+Finding 1:
 Companies classified under the Financials broad sector are excluded from
 high leverage warning flags because high leverage is structurally normal
 for banks, NBFCs and insurance companies.
@@ -47,7 +37,7 @@ Operating Profit Margin
 Status : Implemented
 Category : DATA SOURCE ISSUE
 
-Finding:
+Finding2:
 The supplied opm_percentage column contained widespread inconsistencies.
 OPM is computed as operating_profit / sales * 100 and the source column is
 used only to raise a mismatch warning.
@@ -56,7 +46,7 @@ Book Value Per Share
 Status : Accepted Limitation
 Category : FORMULA DISCREPANCY
 
-Finding:
+Finding3:
 Book value could not be reproduced consistently from the balance sheet.
 companies.book_value is persisted instead and the limitation is documented.
 
@@ -108,7 +98,6 @@ def load_audit_frames(connection):
 
 
 def find_snapshot_anomalies(ratios_df, companies_df):
-   # Compare latest-year computed ROE against the companies.xlsx snapshot.
    latest_df = latest_rows(deduplicate_company_years(ratios_df))
 
    comparison_df = latest_df.merge(companies_df, on='company_id', how='left')
