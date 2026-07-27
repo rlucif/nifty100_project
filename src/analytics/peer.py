@@ -1,31 +1,8 @@
-'''
-Peer percentile engine for the N100 Financial Intelligence Platform.
-
-Sprint 3 Day 18. Computes PERCENT_RANK for 10 metrics within each of the
-11 peer groups and populates the peer_percentiles table.
-
-Ranking direction
-   Nine of the ten metrics rank higher-is-better. Debt-to-equity is
-   inverted (1 - PERCENT_RANK) so that a company carrying less debt
-   receives the higher percentile rank.
-
-Companies with no peer group
-   36 of the 92 companies are not members of any peer group. Requesting
-   their ranks returns the message 'No peer group assigned' rather than
-   raising an error.
-
-Run with:
-   python -m src.analytics.peer
-'''
-
 import sqlite3
-
 import pandas as pd
-
 from src.screener.universe import build_universe
 
 DB_PATH = 'data/nifty100.db'
-
 NO_PEER_GROUP_MESSAGE = 'No peer group assigned'
 
 # The 10 metrics ranked within each peer group.
@@ -71,10 +48,7 @@ def load_peer_groups(connection):
 
 def percent_rank(series):
    # SQL PERCENT_RANK: (rank - 1) / (n - 1), expressed on a 0-100 scale.
-   #
-   # Companies with a missing metric are excluded from the ranking
-   # population rather than being ranked last, so a peer group is not
-   # penalised for incomplete source data.
+   # Companies with a missing metric are excluded from the ranking population rather than being ranked last, so a peer group is not penalised for incomplete source data.
    values = pd.to_numeric(series, errors='coerce')
    ranked = values.rank(method='min', na_option='keep')
    population = values.notna().sum()
@@ -101,8 +75,7 @@ def build_peer_percentiles(universe_df, peer_groups_df):
          ranks = percent_rank(group_df[metric])
 
          if metric in INVERTED_METRICS:
-            # Lower debt earns the higher rank. Missing values stay
-            # missing because NaN propagates through the subtraction.
+            # Lower debt earns the higher rank. Missing values stay missing because NaN propagates through the subtraction.
             ranks = 100 - ranks
 
          for company_id, value, rank in zip(
@@ -128,10 +101,7 @@ def build_peer_percentiles(universe_df, peer_groups_df):
 
 def get_company_percentiles(percentiles_df, company_id):
    # Percentile ranks for one company, or a message if it has no peers.
-   company_rows = percentiles_df[
-      percentiles_df['company_id'] == company_id
-   ]
-
+   company_rows = percentiles_df[percentiles_df['company_id'] == company_id]
    if company_rows.empty:
       return NO_PEER_GROUP_MESSAGE
 
@@ -151,7 +121,6 @@ def save_peer_percentiles(connection, percentiles_df):
    )
 
    connection.commit()
-
    print(f'Saved {len(percentiles_df)} rows to peer_percentiles.')
 
 
@@ -166,9 +135,7 @@ def main():
       save_peer_percentiles(connection, percentiles_df)
 
       ranked_companies = set(percentiles_df['company_id'])
-      unassigned = sorted(
-         set(universe_df['company_id']) - ranked_companies
-      )
+      unassigned = sorted(set(universe_df['company_id']) - ranked_companies)
 
       print(f'Peer groups ranked : {percentiles_df["peer_group_name"].nunique()}')
       print(f'Companies ranked   : {len(ranked_companies)}')

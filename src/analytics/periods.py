@@ -1,16 +1,3 @@
-'''
-Period handling for the N100 Financial Intelligence Platform.
-
-The supplied datasets label every financial year with a text period such as
-'Mar 2024' or 'Dec 2023'. Companies do not share a common financial year end,
-and the raw Excel files also contain irregular labels ('TTM',
-'Mar 2023 15', 'Mar 2016 9m').
-
-This module converts those labels into a sortable key and a fiscal year
-integer so that CAGR windows, latest-year selection and the market_cap join
-all agree on what "the latest year" means.
-'''
-
 import logging
 import re
 
@@ -55,9 +42,7 @@ def period_sort_key(year_label):
 
 
 def fiscal_year(year_label):
-   # Calendar year a financial period closes in, used to join the
-   # market_cap table whose year column is a plain integer.
-   # 'Mar 2024' and 'Dec 2024' both map to 2024.
+   # Calendar year a financial period closes in, used to join the market_cap table whose year column is a plain integer. 'Mar 2024' and 'Dec 2024' both map to 2024.
    month, calendar_year = parse_period(year_label)
    if month is None:
       return None
@@ -87,9 +72,7 @@ def add_period_columns(dataframe, year_column='year'):
 
 
 def latest_rows(dataframe, year_column='year', group_column='company_id'):
-   # One row per company: the most recent parseable period.
-   # Source duplicates (identical company-year rows produced by the
-   # Sprint 2 join fan-out) are collapsed to the first occurrence.
+   # One row per company: the most recent parseable period. Source duplicates (identical company-year rows produced by the Sprint 2 join fan-out) are collapsed to the first occurrence.
    working = add_period_columns(dataframe, year_column)
    working = working[working['period_sort_key'] > 0]
 
@@ -106,8 +89,7 @@ def deduplicate_company_years(
    year_column='year',
    group_column='company_id'):
    # Collapse duplicate company-year rows to a single record.
-   # Sprint 2 deliberately preserved source duplicates in financial_ratios;
-   # analytics built on top of that table must not count a company twice.
+   # Sprint 2 deliberately preserved source duplicates in financial_ratios; analytics built on top of that table must not count a company twice.
    return dataframe.drop_duplicates(
       subset=[group_column, year_column],
       keep='first'
