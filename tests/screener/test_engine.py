@@ -1,13 +1,5 @@
-'''
-Screener engine unit tests.
-
-Covers the two business rules that are implemented in code rather than
-in config, the composite score, and the config validation contract.
-'''
-
 import pandas as pd
 import pytest
-
 from src.screener.engine import ScreenerEngine
 
 
@@ -15,7 +7,6 @@ from src.screener.engine import ScreenerEngine
 def engine():
    instance = ScreenerEngine()
    instance.load_config()
-
    return instance
 
 
@@ -77,8 +68,7 @@ def test_financials_are_exempt_from_upper_bound_debt_filter(
    engine,
    sample_universe
 ):
-   # Rule 1: banks carry structurally high leverage, so a D/E ceiling
-   # must not reject them.
+   # Rule 1: banks carry structurally high leverage, so a D/E ceiling must not reject them.
    filters = {
       'debt_to_equity': {'operator': '<', 'threshold': {'max': 1.0}}
    }
@@ -93,14 +83,11 @@ def test_financials_are_not_exempt_from_equality_debt_filter(
    engine,
    sample_universe
 ):
-   # A bank with D/E of 8.2 is not debt free, so the Debt-Free Blue Chip
-   # equality test still applies to it.
    filters = {
       'debt_to_equity': {'operator': '==', 'threshold': {'max': 0}}
    }
 
    result = engine.apply_filters(sample_universe, filters)
-
    assert result.empty
 
 
@@ -108,8 +95,7 @@ def test_debt_free_company_passes_interest_coverage_minimum(
    engine,
    sample_universe
 ):
-   # Rule 2: TCS has no interest expense so its ICR is null, which
-   # represents infinite coverage and must pass any minimum.
+   # Rule 2: TCS has no interest expense so its ICR is null, which represents infinite coverage and must pass any minimum.
    filters = {
       'interest_coverage': {'operator': '>=', 'threshold': {'min': 5.0}}
    }
@@ -128,7 +114,6 @@ def test_missing_value_fails_an_ordinary_filter(engine, sample_universe):
    }
 
    result = engine.apply_filters(sample_universe, filters)
-
    assert 'ADANIGREEN' not in set(result['company_id'])
 
 
@@ -153,21 +138,16 @@ def test_composite_score_rewards_the_stronger_company(
 ):
    scored = engine.add_composite_scores(sample_universe)
    ranked = scored.set_index('company_id')['composite_quality_score']
-
-   # TCS: high ROE, high ROCE, no debt, strong cash.
-   # ADANIGREEN: heavy debt, negative free cash flow.
    assert ranked['TCS'] > ranked['ADANIGREEN']
 
 
 def test_add_composite_scores_sorts_descending(engine, sample_universe):
    scored = engine.add_composite_scores(sample_universe)
    scores = scored['composite_quality_score'].tolist()
-
    assert scores == sorted(scores, reverse=True)
 
 
 def test_sector_relative_score_is_produced(engine, sample_universe):
    scored = engine.add_composite_scores(sample_universe)
-
    assert 'sector_relative_score' in scored.columns
    assert scored['sector_relative_score'].between(0, 100).all()
