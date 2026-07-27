@@ -15,7 +15,8 @@ else
     PYTHON ?= .venv/bin/python
 endif
 
-.PHONY: help load validate ratios audit screener peer report test clean all
+.PHONY: help load validate ratios audit screener peer valuation report \
+        dashboard api test clean all
 
 help:
 	@echo "N100 Financial Intelligence Platform"
@@ -26,10 +27,12 @@ help:
 	@echo "  make audit      Regenerate output/ratio_edge_cases.log"
 	@echo "  make screener   Run the full Sprint 3 screener pipeline"
 	@echo "  make peer       Recompute peer percentiles only"
+	@echo "  make valuation  Generate valuation_summary.xlsx and flags"
 	@echo "  make report     Generate all Excel reports and radar charts"
+	@echo "  make dashboard  Launch the Streamlit dashboard on :8501"
 	@echo "  make test       Run the test suite"
 	@echo "  make clean      Remove caches and test artifacts"
-	@echo "  make all        load -> ratios -> screener -> test"
+	@echo "  make all        load -> ratios -> screener -> valuation -> test"
 
 # ---------------------------------------------------------------------
 # Sprint 1 - Data foundation
@@ -64,6 +67,15 @@ report:
 	$(PYTHON) -m src.reports.radar_charts
 
 # ---------------------------------------------------------------------
+# Sprint 4 - Dashboard and valuation
+# ---------------------------------------------------------------------
+valuation:
+	$(PYTHON) -m src.analytics.valuation
+
+dashboard:
+	$(PYTHON) -m streamlit run src/dashboard/app.py
+
+# ---------------------------------------------------------------------
 # Quality gates
 # ---------------------------------------------------------------------
 test:
@@ -74,4 +86,4 @@ clean:
 	-@find . -type d -name "__pycache__" -not -path "./.venv/*" -exec rm -rf {} + 2>/dev/null || true
 	-@rm -rf .pytest_cache .ruff_cache 2>/dev/null || true
 
-all: load ratios screener test
+all: load ratios screener valuation test
