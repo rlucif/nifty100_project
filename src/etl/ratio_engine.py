@@ -1,13 +1,6 @@
-'''
-Ratio Engine for the N100 Financial Intelligence Platform:
-Reads financial data from SQLite, computes KPIs using the analytics
-modules and updates the financial_ratios table.
-'''
-
 import csv
 import sqlite3
 from pathlib import Path
-
 import pandas as pd
 
 from src.analytics.ratios import (
@@ -33,7 +26,6 @@ from src.analytics.cagr import (
 )
 
 from src.analytics.cashflow_kpis import get_cash_flow_sign
-
 from src.analytics.periods import (
    add_period_columns,
    deduplicate_company_years
@@ -43,12 +35,8 @@ from src.analytics.periods import (
 DB_PATH = 'data/nifty100.db'
 CAPITAL_ALLOCATION_CSV = 'output/capital_allocation.csv'
 
-# Number of years in the standard CAGR window.
 CAGR_WINDOW_YEARS = 5
 
-# CAGR columns added in Sprint 2 Day 12. composite_quality_score is
-# declared here but populated by the Sprint 3 screener, because it is a
-# cross-sectional score that needs the whole universe to normalise against.
 CAGR_COLUMNS = {
    'revenue_cagr_5yr': 'REAL',
    'pat_cagr_5yr': 'REAL',
@@ -61,8 +49,6 @@ def get_connection():
    return sqlite3.connect(DB_PATH)
 
 def ensure_cagr_columns(connection):
-   # Databases created before Sprint 2 Day 12 predate the CAGR columns.
-   # schema.sql already declares them, so only existing files need patching.
    cursor = connection.cursor()
    existing = {
       row[1] for row in cursor.execute('PRAGMA table_info(financial_ratios)')
@@ -242,10 +228,6 @@ def calculate_profitability_kpis(master_df):
 
 def calculate_cagr_kpis(master_df):
    # Rolling 5-year CAGR for revenue, PAT and EPS.
-   #
-   # The window is built on de-duplicated company-year history: the
-   # Sprint 2 joins fan out on duplicate source rows, and counting the
-   # same year five times would corrupt the lookback.
    history = master_df[[
       'company_id',
       'year',
@@ -286,8 +268,6 @@ def calculate_cagr_kpis(master_df):
 
 
 def _safe_cagr(cagr_function, start_value, end_value):
-   # calculate_cagr returns (value, reason). Rows without a full window,
-   # or with a documented edge case such as TURNAROUND, stay null.
    if pd.isna(start_value) or pd.isna(end_value):
       return None
 
@@ -328,7 +308,6 @@ def export_capital_allocation(master_df):
    allocation_df.to_csv(output_path, index=False, quoting=csv.QUOTE_MINIMAL)
 
    print(f'Wrote {len(allocation_df)} rows to {output_path}.')
-
    return allocation_df
 
 
@@ -339,12 +318,7 @@ that do not match either companies.book_value or
 (equity_capital + reserves).
 Source requires clarification or future audit.
 '''
-def build_financial_ratios_dataframe(master_df):
-   # Build the final dataframe matching the financial_ratios
-   # SQLite table schema
-   # ROCE is intentionally computed for validation and audit purposes.
-   # It is not persisted because the current financial_ratios schema
-   # defined for Sprint 2 does not include a ROCE column.   
+def build_financial_ratios_dataframe(master_df): 
    financial_ratios_df = master_df[[
          'company_id',
          'year',
@@ -427,7 +401,6 @@ def main():
    try:
       ensure_cagr_columns(connection)
       tables = load_tables(connection)
-
       print('Tables loaded successfully.\n')
 
       master_df = build_master_dataframe(tables)
@@ -435,7 +408,6 @@ def main():
       master_df = calculate_cagr_kpis(master_df)
 
       export_capital_allocation(master_df)
-
       financial_ratios_df = build_financial_ratios_dataframe(master_df)
       save_financial_ratios(connection, financial_ratios_df)
 
