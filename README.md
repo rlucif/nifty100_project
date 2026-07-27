@@ -4,7 +4,7 @@ Production-grade analytics for the 92 Nifty 100 companies present in the
 supplied datasets: ETL pipeline, financial ratio engine, investment
 screener, composite health scoring and peer comparison.
 
-**Progress: Sprint 3 complete (Day 21 of 45).**
+**Progress: Sprint 4 complete (Day 28 of 45).**
 
 ---
 
@@ -28,7 +28,9 @@ screener, composite health scoring and peer comparison.
 │   ├── capital_allocation.csv
 │   ├── ratio_edge_cases.log
 │   ├── screener_output.xlsx
-│   └── peer_comparison.xlsx
+│   ├── peer_comparison.xlsx
+│   ├── valuation_summary.xlsx
+│   └── valuation_flags.csv
 │
 ├── reports/
 │   ├── dq_review_report.md
@@ -40,7 +42,8 @@ screener, composite health scoring and peer comparison.
 │   │   ├── cashflow_kpis.py     FCF, CFO quality, CapEx, allocation
 │   │   ├── cagr.py              CAGR engine with edge case handling
 │   │   ├── periods.py           Financial period parsing and ordering
-│   │   └── peer.py              Peer percentile ranking
+│   │   ├── peer.py              Peer percentile ranking
+│   │   └── valuation.py         FCF yield and overvaluation flags
 │   │
 │   ├── etl/
 │   │   ├── sqlite_loader.py     Excel to SQLite
@@ -48,6 +51,13 @@ screener, composite health scoring and peer comparison.
 │   │   ├── run_validation.py    Validation runner
 │   │   ├── ratio_engine.py      Populates financial_ratios
 │   │   └── ratio_edge_case_audit.py
+│   │
+│   ├── dashboard/
+│   │   ├── app.py               Streamlit entry point
+│   │   ├── pages/               8 screen files
+│   │   └── utils/
+│   │       ├── db.py            Cached data loader (ttl=600)
+│   │       └── ui.py            Shared formatting helpers
 │   │
 │   ├── screener/
 │   │   ├── universe.py          Latest-year screening universe
@@ -105,7 +115,9 @@ pip install -r requirements.txt
 | `make audit` | Regenerate `output/ratio_edge_cases.log` |
 | `make screener` | Run the full Sprint 3 screener pipeline |
 | `make peer` | Recompute peer percentiles only |
+| `make valuation` | Generate `valuation_summary.xlsx` and the flags CSV |
 | `make report` | Generate all Excel reports and radar charts |
+| `make dashboard` | Launch the Streamlit dashboard on `localhost:8501` |
 | `make test` | Run the test suite |
 | `make clean` | Remove caches and test artifacts, database untouched |
 
@@ -142,6 +154,42 @@ python -m src.screener.run_screener
 - Peer percentile ranks for 10 metrics across 11 peer groups
 - Colour-coded Excel exports and 92 radar charts
 
+### Sprint 4 - Dashboard & Valuation
+
+- Eight screen Streamlit dashboard with a ten minute query cache
+- Valuation module: FCF yield, sector median P/E and
+  Caution / Discount / Fair flags
+
+---
+
+## Running the Dashboard
+
+```bash
+streamlit run src/dashboard/app.py
+```
+
+The app serves on **http://localhost:8501**. Run `make ratios`,
+`make screener` and `make valuation` first so every screen has data.
+
+### Screens
+
+| # | Screen | What it shows |
+| --- | --- | --- |
+| 1 | **Home** | Six index-level KPI tiles, a sector breakdown donut, the top five companies by composite quality score, and a sidebar year selector that re-points the valuation tiles |
+| 2 | **Company Profile** | Search by name or ticker, then a company card, six KPI tiles, a ten-year revenue and net profit bar chart, a dual-axis ROE/ROCE line chart, and analyst pros and cons |
+| 3 | **Screener** | Ten metric sliders plus six preset buttons. The results table updates live and downloads as CSV |
+| 4 | **Peer Comparison** | Pick one of the 11 peer groups, see a radar of any member against the peer average, and a side-by-side table with the benchmark highlighted |
+| 5 | **Trend Analysis** | Overlay up to three metrics across ten years, each point annotated with its year-on-year change |
+| 6 | **Sector Analysis** | Revenue against ROE as a bubble chart sized by market cap and coloured by sub-sector, plus sector median bars |
+| 7 | **Capital Allocation** | A treemap of every company grouped by the eight capital allocation patterns, with drill-down into any pattern |
+| 8 | **Annual Reports** | Available report years with clickable BSE PDF links. Missing links show a red *Report unavailable* badge; live link checking is opt-in |
+
+Screener presets on screen approximate three of the six preset rules,
+because the specified ten sliders cannot express an equality test, a
+payout cap or a year-on-year direction. Run `make screener` for
+`output/screener_output.xlsx`, which applies every rule in full. The
+screen explains this in place.
+
 ---
 
 ## Data Notes
@@ -164,11 +212,12 @@ python -m pytest -q
 Expected result:
 
 ```text
-156 passed
+183 passed
 ```
 
 This includes the 14 data quality rule tests required by the Sprint 3
-exit criteria.
+exit criteria and the headless dashboard smoke tests that load all
+eight screens.
 
 ---
 
