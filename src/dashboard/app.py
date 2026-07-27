@@ -1,8 +1,5 @@
-'''
-Run with:
-   streamlit run src/dashboard/app.py
-The app then serves on http://localhost:8501
-'''
+# Run with:
+   # streamlit run src/dashboard/app.py
 
 import sys
 from pathlib import Path
@@ -21,7 +18,7 @@ from src.dashboard.utils.db import (  # noqa: E402
 from src.dashboard.utils.ui import simulated_note  # noqa: E402
 
 st.set_page_config(
-   page_title='Nifty 100 Analytics',
+   page_title='Nifty100 Analytics',
    page_icon='https://bluestock.in/static/assets/logo/dp.jpg',
    layout='wide',
    initial_sidebar_state='expanded'
