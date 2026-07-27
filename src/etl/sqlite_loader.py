@@ -1,10 +1,3 @@
-'''
-SQLite loader for the N100 Financial Intelligence Platform.
-
-Creates the database schema and loads validated core datasets
-into the SQLite data warehouse.
-'''
-
 import sqlite3
 import pandas as pd
 import time
