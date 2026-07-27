@@ -15,7 +15,6 @@ CAPITAL_ALLOCATION_PATTERNS = {
 
 # Free Cash Flow
 def calculate_free_cash_flow(operating_activity, investing_activity):
-   # Negative free cash flow is a valid business outcome, not an error.
    return operating_activity + investing_activity
 
 
@@ -38,7 +37,6 @@ def calculate_capital_allocation(
       financing_activity >= 0
    )
 
-   # A reinvestor with CFO/PAT above 1.0 is returning cash to shareholders rather than funding growth.
    if signs == (True, False, False):
       if cfo_quality_score is not None and cfo_quality_score > 1:
          return 'Shareholder Returns'
@@ -49,7 +47,6 @@ def calculate_capital_allocation(
 
 
 def get_cash_flow_sign(value):
-   # Sign character used by output/capital_allocation.csv.
    if value is None:
       return None
 
@@ -134,3 +131,26 @@ def get_fcf_conversion_label(fcf_conversion):
       return 'Moderate'
 
    return 'CapEx Heavy'
+
+
+# Distress and deleveraging detection (Sprint 5 Day 31)
+def calculate_distress_flag(operating_activity, financing_activity):
+   if operating_activity is None or financing_activity is None:
+      return False
+   if operating_activity != operating_activity:
+      return False
+   if financing_activity != financing_activity:
+      return False
+
+   return operating_activity < 0 and financing_activity > 0
+
+
+def calculate_deleveraging_flag(
+   financing_activity,
+   borrowings_current,
+   borrowings_previous):
+   values = (financing_activity, borrowings_current, borrowings_previous)
+   if any(value is None or value != value for value in values):
+      return False
+
+   return financing_activity < 0 and borrowings_current < borrowings_previous
