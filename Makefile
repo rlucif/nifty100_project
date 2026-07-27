@@ -1,10 +1,7 @@
 # =====================================================================
-# N100 Financial Intelligence Platform
-#
 # Command contract from the project deliverables checklist.
 # Every target runs module-style from the repository root so that
 # "src." imports resolve.
-#
 # On Windows the virtual environment interpreter lives in Scripts/,
 # on Linux and macOS in bin/. PYTHON picks whichever exists.
 # =====================================================================
