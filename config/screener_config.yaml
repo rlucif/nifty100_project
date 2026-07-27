@@ -1,20 +1,329 @@
+# ----------------------------------------------------------
+# Screener Configuration
+#
+# This file defines analyst-editable screening thresholds and the six
+# preset screeners required by Sprint 3.
+#
+# Business rules (Financials D/E exemption, Debt Free ICR handling,
+# winsorisation, composite score weights) are implemented in
+# src/screener/engine.py, not here.
+#
+# Sections
+#   metrics : display metadata and direction for each filterable metric
+#   filters : default thresholds for the custom screener
+#   presets : the six preset screeners, each with its own thresholds
+# ----------------------------------------------------------
+
+# ----------------------------------------------------------
+# Metric metadata
+# direction: higher_is_better | lower_is_better
+# ----------------------------------------------------------
+metrics:
+  return_on_equity_pct:
+    label: "ROE %"
+    direction: higher_is_better
+  debt_to_equity:
+    label: "Debt / Equity"
+    direction: lower_is_better
+  free_cash_flow_cr:
+    label: "Free Cash Flow (Cr)"
+    direction: higher_is_better
+  revenue_cagr_5yr:
+    label: "Revenue CAGR 5yr %"
+    direction: higher_is_better
+  pat_cagr_5yr:
+    label: "PAT CAGR 5yr %"
+    direction: higher_is_better
+  eps_cagr_5yr:
+    label: "EPS CAGR 5yr %"
+    direction: higher_is_better
+  operating_profit_margin_pct:
+    label: "OPM %"
+    direction: higher_is_better
+  pe_ratio:
+    label: "P/E"
+    direction: lower_is_better
+  pb_ratio:
+    label: "P/B"
+    direction: lower_is_better
+  dividend_yield_pct:
+    label: "Dividend Yield %"
+    direction: higher_is_better
+  interest_coverage:
+    label: "Interest Coverage"
+    direction: higher_is_better
+  market_cap_crore:
+    label: "Market Cap (Cr)"
+    direction: higher_is_better
+  net_profit:
+    label: "Net Profit (Cr)"
+    direction: higher_is_better
+  asset_turnover:
+    label: "Asset Turnover"
+    direction: higher_is_better
+  sales:
+    label: "Sales (Cr)"
+    direction: higher_is_better
+  dividend_payout_ratio_pct:
+    label: "Dividend Payout %"
+    direction: higher_is_better
+  revenue_cagr_3yr:
+    label: "Revenue CAGR 3yr %"
+    direction: higher_is_better
+
+# ----------------------------------------------------------
+# Custom screener defaults
+#
+# All 15 filterable metrics required by Sprint 3 Day 15.
+# Enable the ones an analyst wants and adjust the threshold.
+# ----------------------------------------------------------
 filters:
   return_on_equity_pct:
-    enabled: true
+    enabled: false
     operator: ">="
-    values:
+    threshold:
       min: 15
 
   debt_to_equity:
-    enabled: true
+    enabled: false
     operator: "<="
-    values:
-      max: 1
+    threshold:
+      max: 1.0
 
   free_cash_flow_cr:
     enabled: false
     operator: ">"
-    values:
+    threshold:
       min: 0
 
-presets: {}
+  revenue_cagr_5yr:
+    enabled: false
+    operator: ">="
+    threshold:
+      min: 10
+
+  pat_cagr_5yr:
+    enabled: false
+    operator: ">="
+    threshold:
+      min: 15
+
+  eps_cagr_5yr:
+    enabled: false
+    operator: ">="
+    threshold:
+      min: 10
+
+  operating_profit_margin_pct:
+    enabled: false
+    operator: ">="
+    threshold:
+      min: 15
+
+  pe_ratio:
+    enabled: false
+    operator: "<="
+    threshold:
+      max: 20
+
+  pb_ratio:
+    enabled: false
+    operator: "<="
+    threshold:
+      max: 3.0
+
+  dividend_yield_pct:
+    enabled: false
+    operator: ">="
+    threshold:
+      min: 1
+
+  interest_coverage:
+    enabled: false
+    operator: ">="
+    threshold:
+      min: 3
+
+  market_cap_crore:
+    enabled: false
+    operator: ">="
+    threshold:
+      min: 50000
+
+  net_profit:
+    enabled: false
+    operator: ">="
+    threshold:
+      min: 1000
+
+  asset_turnover:
+    enabled: false
+    operator: ">="
+    threshold:
+      min: 0.5
+
+  sales:
+    enabled: false
+    operator: ">="
+    threshold:
+      min: 5000
+
+# ----------------------------------------------------------
+# Preset screeners
+#
+# Thresholds are taken from the Sprint 3 Day 16 specification.
+# Each preset carries its own thresholds because the same metric is
+# screened at different levels by different investment styles
+# (Quality Compounder wants ROE > 15, Debt-Free Blue Chip wants > 12).
+# ----------------------------------------------------------
+presets:
+  quality_compounder:
+    label: "Quality Compounder"
+    description: "High return on equity funded by cash, not debt."
+    filters:
+      return_on_equity_pct:
+        operator: ">"
+        threshold:
+          min: 15
+      debt_to_equity:
+        operator: "<"
+        threshold:
+          max: 1.0
+      free_cash_flow_cr:
+        operator: ">"
+        threshold:
+          min: 0
+      revenue_cagr_5yr:
+        operator: ">"
+        threshold:
+          min: 10
+
+  value_pick:
+    label: "Value Pick"
+    description: "Cheap on earnings and book value with a dividend."
+    # DATA LIMITATION - returns 2 companies, below the 5-50 exit range.
+    # P/E and P/B come from the simulated market_cap dataset, where the
+    # two are uncorrelated (r = -0.11). In real markets they move
+    # together, so a company cheap on earnings is usually also cheap on
+    # book. 15 companies pass P/E < 20 and 9 pass P/B < 3.0, but only 2
+    # pass both. The thresholds below are the Sprint 3 specification and
+    # are correct for live market data.
+    # To satisfy the exit criterion on the simulated dataset, relax to
+    # pe_ratio max 30 and pb_ratio max 6.0 (returns 13 companies).
+    filters:
+      pe_ratio:
+        operator: "<"
+        threshold:
+          max: 20
+      pb_ratio:
+        operator: "<"
+        threshold:
+          max: 3.0
+      debt_to_equity:
+        operator: "<"
+        threshold:
+          max: 2.0
+      dividend_yield_pct:
+        operator: ">"
+        threshold:
+          min: 1
+
+  growth_accelerator:
+    label: "Growth Accelerator"
+    description: "Profit compounding faster than revenue, modest leverage."
+    filters:
+      pat_cagr_5yr:
+        operator: ">"
+        threshold:
+          min: 20
+      revenue_cagr_5yr:
+        operator: ">"
+        threshold:
+          min: 15
+      debt_to_equity:
+        operator: "<"
+        threshold:
+          max: 2.0
+
+  dividend_champion:
+    label: "Dividend Champion"
+    description: "Well covered dividend backed by free cash flow."
+    filters:
+      dividend_yield_pct:
+        operator: ">"
+        threshold:
+          min: 2
+      dividend_payout_ratio_pct:
+        operator: "<"
+        threshold:
+          max: 80
+      free_cash_flow_cr:
+        operator: ">"
+        threshold:
+          min: 0
+
+  debt_free_blue_chip:
+    label: "Debt-Free Blue Chip"
+    description: "No borrowings, solid returns, meaningful scale."
+    # DATA LIMITATION - returns 2 companies, below the 5-50 exit range.
+    # Only 3 of 92 companies report literally zero borrowings in their
+    # latest year. Relaxing debt_to_equity to "<" 0.05, the conventional
+    # market definition of debt free, returns 16 companies.
+    # The equality test below is the Sprint 3 specification.
+    filters:
+      debt_to_equity:
+        operator: "=="
+        threshold:
+          max: 0
+      return_on_equity_pct:
+        operator: ">"
+        threshold:
+          min: 12
+      sales:
+        operator: ">"
+        threshold:
+          min: 5000
+
+  turnaround_watch:
+    label: "Turnaround Watch"
+    description: "Reviving revenue, positive cash, falling leverage."
+    filters:
+      revenue_cagr_3yr:
+        operator: ">"
+        threshold:
+          min: 10
+      free_cash_flow_cr:
+        operator: ">"
+        threshold:
+          min: 0
+      debt_to_equity_declining:
+        operator: "=="
+        threshold:
+          max: true
+
+# ----------------------------------------------------------
+# Composite quality score
+#
+# Sprint 3 Day 17. Weights sum to 100.
+# Each component is winsorised at the P10/P90 percentile before being
+# scaled to 0-100, so a single extreme value cannot dominate the score.
+# ----------------------------------------------------------
+composite_score:
+  winsorise_lower_percentile: 10
+  winsorise_upper_percentile: 90
+
+  weights:
+    profitability:
+      return_on_equity_pct: 15
+      return_on_capital_employed_pct: 10
+      net_profit_margin_pct: 10
+    cash_quality:
+      fcf_cagr_5yr: 15
+      cfo_to_pat_ratio: 10
+      fcf_positive_flag: 5
+    growth:
+      revenue_cagr_5yr: 10
+      pat_cagr_5yr: 10
+    leverage:
+      debt_to_equity_score: 10
+      interest_coverage_score: 5
