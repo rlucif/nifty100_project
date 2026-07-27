@@ -1,0 +1,18 @@
+company_id,metric_type,raw_text,reason
+HDFCBANK,sales_growth,TTM:            47%,No period-and-percentage match
+HDFCBANK,profit_growth,TTM:                27%,No period-and-percentage match
+HDFCBANK,roe,Last Year:    17%,No period-and-percentage match
+INFY,sales_growth,TTM:            3%,No period-and-percentage match
+INFY,profit_growth,TTM:                 8%,No period-and-percentage match
+INFY,roe,Last Year:     32%,No period-and-percentage match
+SBILIFE,sales_growth,TTM:            43%,No period-and-percentage match
+SBILIFE,profit_growth,TTM:                 18%,No period-and-percentage match
+SBILIFE,stock_price_cagr,1 Year:         -2%,No period-and-percentage match
+SBILIFE,roe,Last Year:      12%,No period-and-percentage match
+TCS,sales_growth,TTM:            5%,No period-and-percentage match
+TCS,profit_growth,TTM:                 8%,No period-and-percentage match
+TCS,roe,Last Year:       52%,No period-and-percentage match
+WIPRO,stock_price_cagr,3 Years:      -1%,No period-and-percentage match
+WIPRO,sales_growth,TTM:           -3%,No period-and-percentage match
+WIPRO,profit_growth,TTM:                 1%,No period-and-percentage match
+WIPRO,roe,Last Year:       14%,No period-and-percentage match

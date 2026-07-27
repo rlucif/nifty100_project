@@ -1,0 +1,17 @@
+company_id,company_name,sector,year,cfo_cr,cff_cr,net_profit_cr,cfo_quality_score,capital_allocation_label,structurally_normal_for_sector,interpretation
+AXISBANK,Axis Bank Ltd,Financials,Mar 2024,-5555.0,22341.0,24861.0,4.9706,Growth Funded by Debt,True,"Lending growth pattern, profitable - not a distress indicator"
+BAJAJFINSV,Bajaj Finserv Ltd,Financials,Mar 2024,-68674.0,82709.0,15595.0,-2.9937,Growth Funded by Debt,True,"Lending growth pattern, profitable - not a distress indicator"
+BAJFINANCE,Bajaj Finance Ltd,Financials,Mar 2024,-72760.0,82415.0,14451.0,-3.7584,Growth Funded by Debt,True,"Lending growth pattern, profitable - not a distress indicator"
+BANKBARODA,Bank of Baroda,Financials,Mar 2024,-6274.0,5476.0,18869.0,3.4739,Growth Funded by Debt,True,"Lending growth pattern, profitable - not a distress indicator"
+BHEL,"Bharat Heavy Electricals Limited
+",Industrials,Mar 2024,-3713.0,2656.0,282.0,-2.2108,Distress Signal,False,Operating cash outflow funded by financing - review
+CHOLAFIN,Cholamandalam Investment & Finance Company Ltd,Financials,Mar 2024,-35683.0,38471.0,3420.0,-6.1953,Growth Funded by Debt,True,"Lending growth pattern, profitable - not a distress indicator"
+GRASIM,Grasim Industries Ltd,Industrials,Mar 2024,-10719.0,33908.0,9926.0,0.6128,Growth Funded by Debt,False,Operating cash outflow funded by financing - review
+M&M,"Mahindra & Mahindra Ltd
+",Consumer Discretionary,Mar 2024,-5630.0,12281.0,12270.0,3.3156,Growth Funded by Debt,False,Operating cash outflow funded by financing - review
+PFC,Power Finance Corporation Ltd,Financials,Mar 2024,-97820.0,101261.0,26461.0,-3.0348,Growth Funded by Debt,True,"Lending growth pattern, profitable - not a distress indicator"
+PNB,Punjab National Bank,Financials,Mar 2024,-27939.0,3518.0,9157.0,-1.2185,Growth Funded by Debt,True,"Lending growth pattern, profitable - not a distress indicator"
+RECLTD,REC Ltd,Financials,Mar 2024,-57723.0,59588.0,14145.0,-3.8562,Growth Funded by Debt,True,"Lending growth pattern, profitable - not a distress indicator"
+SHRIRAMFIN,"Shriram Finance Ltd
+",Financials,Mar 2024,-31101.0,27609.0,7399.0,-2.6128,Growth Funded by Debt,True,"Lending growth pattern, profitable - not a distress indicator"
+TVSMOTOR,TVS Motor Company Ltd,Consumer Discretionary,Mar 2024,-1253.0,2759.0,1779.0,-0.7509,Growth Funded by Debt,False,Operating cash outflow funded by financing - review
