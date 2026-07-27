@@ -62,7 +62,7 @@ def load_data(connection):
          'rejected': 0,
          'runtime_s': runtime
       })
-      print(f'✓ Inserted {rows} rows')
+      print(f'Inserted {rows} rows')
    connection.commit()
 
    pd.DataFrame(audit).to_csv(
@@ -79,12 +79,12 @@ def main():
    try:
       create_schema(connection)
       tables_loaded, total_rows = load_data(connection)
-      print('\n===================================')
+      print('\n------------------------------------')
       print('Database created successfully')
       print(f'Tables loaded : {tables_loaded}')
       print(f'Rows inserted : {total_rows}')
       print('Database      : data/nifty100.db')
-      print('===================================')
+      print('-------------------------------------')
    except Exception as e:
       print(f'Database loading failed: {e}')
       raise
