@@ -1,10 +1,3 @@
-'''
-Peer percentile engine unit tests.
-
-Verifies the PERCENT_RANK definition, the debt-to-equity inversion and
-the no-peer-group contract required by Sprint 3 Day 18.
-'''
-
 import pandas as pd
 import pytest
 
@@ -76,7 +69,6 @@ def test_highest_roe_gets_the_highest_percentile(
    sample_universe,
    sample_peer_groups
 ):
-   # Sprint 3 Day 21 spot-check.
    percentiles = build_peer_percentiles(sample_universe, sample_peer_groups)
    roe = percentiles[percentiles['metric'] == 'return_on_equity_pct']
    best = roe.loc[roe['value'].idxmax()]
@@ -109,7 +101,6 @@ def test_company_without_a_peer_group_returns_a_message(
    sample_universe,
    sample_peer_groups
 ):
-   # Must return a message rather than raising.
    percentiles = build_peer_percentiles(sample_universe, sample_peer_groups)
    result = get_company_percentiles(percentiles, 'NOTLISTED')
 

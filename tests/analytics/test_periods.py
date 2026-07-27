@@ -1,13 +1,4 @@
-'''
-Period parsing unit tests.
-
-The supplied datasets mix clean 'Mar 2024' labels with 'TTM',
-'Mar 2023 15' and 'Mar 2016 9m'. Everything downstream that orders
-years depends on these rules.
-'''
-
 import pandas as pd
-
 from src.analytics.periods import (
    deduplicate_company_years,
    fiscal_year,
@@ -84,7 +75,7 @@ def test_latest_rows_ignores_unparseable_periods():
 
 
 def test_deduplicate_collapses_repeated_company_years():
-   # The Sprint 2 join fan-out repeats company-year rows.
+   # The Sprint 2 join fan out repeats company-year rows.
    frame = pd.DataFrame({
       'company_id': ['PNB', 'PNB', 'PNB'],
       'year': ['Mar 2024', 'Mar 2024', 'Mar 2023'],
