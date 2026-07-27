@@ -216,9 +216,7 @@ def test_calculate_asset_turnover(
       total_assets
    ) == expected
 
-   # ---------------------------------------------------------------------
 # Free Cash Flow
-# ---------------------------------------------------------------------
 def test_calculate_free_cash_flow_positive():
    assert calculate_free_cash_flow(100, -40) == 60
 
@@ -231,9 +229,7 @@ def test_calculate_free_cash_flow_zero():
    assert calculate_free_cash_flow(120, 0) == 120
 
 
-# ---------------------------------------------------------------------
 # FCF Concern Flag
-# ---------------------------------------------------------------------
 def test_fcf_concern_true():
    assert calculate_fcf_concern_flag([-10, -20, -30]) is True
 
@@ -250,9 +246,7 @@ def test_fcf_concern_last_three_negative():
    assert calculate_fcf_concern_flag([50, -10, -20, -30]) is True
 
 
-# -------------------------------------------------------
 # CFO Quality Score
-# -------------------------------------------------------
 def test_calculate_cfo_quality_score():
    assert calculate_cfo_quality_score(1200, 1000) == 1.2
 
@@ -260,18 +254,14 @@ def test_calculate_cfo_quality_score():
 def test_calculate_cfo_quality_score_zero_profit():
    assert calculate_cfo_quality_score(500, 0) is None
 
-# -------------------------------------------------------
 # CapEx Intensity
-# -------------------------------------------------------
 def test_calculate_capex_intensity():
    assert calculate_capex_intensity(-250, 5000) == 5.0
 
 def test_calculate_capex_intensity_zero_sales():
    assert calculate_capex_intensity(-250, 0) is None
 
-# -------------------------------------------------------
 # FCF Conversion
-# -------------------------------------------------------
 def test_calculate_fcf_conversion():
    assert calculate_fcf_conversion(600, 1000) == 60.0
 
