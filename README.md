@@ -4,7 +4,7 @@ Production-grade analytics for the 92 Nifty 100 companies present in the
 supplied datasets: ETL pipeline, financial ratio engine, investment
 screener, composite health scoring and peer comparison.
 
-**Progress: Sprint 5 complete (Day 35 of 45).**
+**Status: Complete — all 6 sprints, 23 of 23 deliverables, 20 of 20 acceptance gates passing.**
 
 ---
 
@@ -53,7 +53,14 @@ screener, composite health scoring and peer comparison.
 │   │   ├── cagr.py              CAGR engine with edge case handling
 │   │   ├── periods.py           Financial period parsing and ordering
 │   │   ├── peer.py              Peer percentile ranking
-│   │   └── valuation.py         FCF yield and overvaluation flags
+│   │   ├── valuation.py         FCF yield and overvaluation flags
+│   │   ├── clustering.py        KMeans company archetypes
+│   │   └── statistics.py        Correlation, outliers, percentiles
+│   │
+│   ├── api/
+│   │   ├── main.py              FastAPI app, CORS, request logging
+│   │   ├── dependencies.py      Cached data access
+│   │   └── routers/             7 routers, 20 endpoints
 │   │
 │   ├── nlp/
 │   │   ├── parser.py            Analysis text parsing
@@ -139,6 +146,13 @@ pip install -r requirements.txt
 | `make nlp` | Parse the analysis text and generate pros/cons |
 | `make cashflow` | Generate `cashflow_intelligence.xlsx` and alerts |
 | `make tearsheets` | Batch build the company, sector and portfolio PDFs |
+| `make cluster` | KMeans clustering and the elbow plot |
+| `make stats` | Correlation heatmap, outliers, percentile table |
+| `make indexes` | Create SQLite indexes and benchmark them |
+| `make api` | Launch the FastAPI server on `localhost:8000` |
+| `make acceptance` | Run the 20 acceptance gates and build the checklist |
+| `make archive` | Copy all 23 deliverables to `output/final_deliverables/` |
+| `make testreport` | Run tests and write `reports/pytest_report.html` |
 | `make report` | Generate all Excel reports and radar charts |
 | `make dashboard` | Launch the Streamlit dashboard on `localhost:8501` |
 | `make test` | Run the test suite |
@@ -194,6 +208,13 @@ python -m src.screener.run_screener
 - 91 two-page company tearsheets, 11 sector reports and a 93 page
   portfolio summary, all built with ReportLab
 
+### Sprint 6 - API Server, Clustering & Final QA
+
+- KMeans clustering of all 92 companies into 5 named archetypes
+- FastAPI server, 16 endpoints under `/api/v1`, OpenAPI 3 spec exported
+- Correlation heatmap, sector-relative outlier detection, percentile table
+- 12 SQLite indexes, load test, 11-page analyst guide, acceptance checklist
+
 ---
 
 ## Running the Dashboard
@@ -226,6 +247,51 @@ screen explains this in place.
 
 ---
 
+## Running the API
+
+```bash
+uvicorn src.api.main:app --port 8000
+```
+
+Interactive documentation is at **http://localhost:8000/docs**. The API
+and the dashboard can run simultaneously; they use different ports.
+
+All 16 endpoints are read-only and sit under `/api/v1`:
+
+| Endpoint | Returns |
+| --- | --- |
+| `GET /health` | Status, row counts for all 10 tables, uptime, version |
+| `GET /companies` | All 92 companies; filter by `sector`, `market_cap_category`, `search` |
+| `GET /companies/{ticker}` | Full profile: master record, sector, latest KPIs |
+| `GET /companies/{ticker}/pl` | P&L history; `from_year` / `to_year` as `YYYY-MM` |
+| `GET /companies/{ticker}/bs` | Balance sheet history |
+| `GET /companies/{ticker}/cashflow` | Cash flow history |
+| `GET /companies/{ticker}/ratios` | Computed KPIs per year, or one `year` |
+| `GET /companies/{ticker}/tearsheet` | The tearsheet PDF as a download |
+| `GET /companies/{ticker}/peers/compare` | Radar data: 8 axes, peer average, benchmark |
+| `GET /companies/{ticker}/documents` | Annual report links with `is_url_valid` |
+| `GET /screener` | Ranked results for any threshold combination, or a `preset` |
+| `GET /sectors` | Every sector with company count and medians |
+| `GET /sectors/{sector}/companies` | Companies in a sector with latest KPIs |
+| `GET /peers/{group_name}` | Peer group with a percentile rank per metric |
+| `GET /market-cap/{ticker}` | Valuation multiples 2019-2024 (SIMULATED) |
+| `GET /portfolio/stats` | P10 to P90, mean and std for 10 KPIs |
+
+Examples:
+
+```bash
+curl "http://localhost:8000/api/v1/screener?min_roe=15&max_de=1"
+```
+
+```bash
+curl http://localhost:8000/api/v1/companies/TCS/ratios
+```
+
+Returns `400` for an out-of-range threshold or a bad year format, `404`
+for an unknown ticker, sector or peer group.
+
+---
+
 ## Data Notes
 
 - All monetary values are in **INR Crore**.
@@ -255,7 +321,7 @@ python -m pytest -q
 Expected result:
 
 ```text
-229 passed
+298 passed
 ```
 
 This includes the 14 data quality rule tests required by the Sprint 3
