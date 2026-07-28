@@ -29,8 +29,15 @@ help:
 	@echo "  make cashflow   Generate cashflow_intelligence.xlsx and alerts"
 	@echo "  make tearsheets Batch build company and sector PDFs"
 	@echo "  make report     Generate every Excel, chart and PDF output"
+	@echo "  make cluster    Run KMeans clustering and the elbow plot"
+	@echo "  make stats      Correlation heatmap, outliers, percentiles"
+	@echo "  make indexes    Create SQLite indexes and benchmark them"
 	@echo "  make dashboard  Launch the Streamlit dashboard on :8501"
+	@echo "  make api        Launch the FastAPI server on :8000"
+	@echo "  make acceptance Run the 20 gates and build the checklist"
+	@echo "  make archive    Copy all 23 deliverables to output/"
 	@echo "  make test       Run the test suite"
+	@echo "  make testreport Run tests and write reports/pytest_report.html"
 	@echo "  make clean      Remove caches and test artifacts"
 	@echo "  make all        load -> ratios -> screener -> valuation -> test"
 
@@ -51,6 +58,9 @@ ratios:
 
 audit:
 	$(PYTHON) -m src.etl.ratio_edge_case_audit
+
+indexes:
+	$(PYTHON) -m src.etl.create_indexes
 
 # ---------------------------------------------------------------------
 # Sprint 3 - Screener and peer comparison
@@ -84,6 +94,31 @@ tearsheets:
 	$(PYTHON) -m src.reports.portfolio_summary
 
 # ---------------------------------------------------------------------
+# Sprint 6 - Clustering, API and sign-off
+# ---------------------------------------------------------------------
+cluster:
+	$(PYTHON) -m src.analytics.clustering
+
+stats:
+	$(PYTHON) -m src.analytics.statistics
+
+api:
+	$(PYTHON) -m uvicorn src.api.main:app --port 8000 --reload
+
+openapi:
+	$(PYTHON) -m src.api.main
+
+acceptance:
+	$(PYTHON) -m src.reports.analyst_guide
+	$(PYTHON) -m src.reports.acceptance
+
+archive:
+	$(PYTHON) -m src.reports.archive_deliverables
+
+testreport:
+	$(PYTHON) -m pytest tests/ -q --html=reports/pytest_report.html --self-contained-html
+
+# ---------------------------------------------------------------------
 # Sprint 4 - Dashboard and valuation
 # ---------------------------------------------------------------------
 valuation:
@@ -103,4 +138,4 @@ clean:
 	-@find . -type d -name "__pycache__" -not -path "./.venv/*" -exec rm -rf {} + 2>/dev/null || true
 	-@rm -rf .pytest_cache .ruff_cache 2>/dev/null || true
 
-all: load ratios screener valuation test
+all: load ratios indexes screener valuation nlp cashflow cluster stats tearsheets acceptance test

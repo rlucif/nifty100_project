@@ -7,7 +7,6 @@ tempo.ipynb
 
 # Python
 __pycache__/
-__init__.py
 *.pyc
 
 # Pytest
@@ -15,4 +14,10 @@ __init__.py
 
 # Environment
 .venv/
-.env.vscode/
+.env
+.vscode/
+
+# Handover archive: a byte-for-byte copy of deliverables already tracked
+# elsewhere in the repo. Regenerate with:
+#   python -m src.reports.archive_deliverables
+output/final_deliverables/
