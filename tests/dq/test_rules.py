@@ -1,13 +1,3 @@
-'''
-Data quality rule tests for the N100 Financial Intelligence Platform.
-
-Sprint 3 Day 21 requires all 14 DQ rules to pass with zero failures.
-
-Rules 1-8 exercise the Sprint 1 validator against synthetic frames.
-Rules 9-14 assert the integrity of the delivered database and the
-Sprint 2 / Sprint 3 analytics tables built on top of it.
-'''
-
 import sqlite3
 from pathlib import Path
 
@@ -31,8 +21,7 @@ DB_PATH = Path('data/nifty100.db')
 MINIMUM_RATIO_ROWS = 1100
 EXPECTED_PEER_GROUPS = 11
 
-# Tickers present in the financial statements but absent from the
-# truncated companies.xlsx master. Documented in the Sprint 2 audit.
+# Tickers present in the financial statements but absent from the truncated companies.xlsx master. Documented in the Sprint 2 audit.
 KNOWN_ORPHAN_COMPANY_IDS = {'ULTRACEMCO', 'UNIONBANK'}
 
 KPI_COLUMNS = [
@@ -71,7 +60,6 @@ def financial_ratios(connection):
    return pd.read_sql('SELECT * FROM financial_ratios', connection)
 
 
-# Rules 1-8: Sprint 1 validator rules
 def test_dq_rule_01_required_columns_present():
    frame = pd.DataFrame({'company_id': ['TCS'], 'year': ['Mar 2024']})
 
