@@ -369,8 +369,10 @@ def export_cashflow_intelligence(connection=None):
          'structurally_normal_for_sector column.',
          'Deleveraging flag: financing cash flow negative and the '
          'borrowings balance fell year over year.',
-         'Operating profit is used as the EBITDA proxy; the supplied '
-         'datasets carry no depreciation line.'
+         'Operating profit is EBITDA by construction: the source P&L '
+         'reports it before depreciation, verified against the identity '
+         'operating profit + other income - interest - depreciation = '
+         'profit before tax.'
       ]})
       _write_sheet(writer, 'Notes', notes)
 

@@ -21,3 +21,7 @@ __pycache__/
 # elsewhere in the repo. Regenerate with:
 #   python -m src.reports.archive_deliverables
 output/final_deliverables/
+
+# Submission bundle: duplicates of tracked deliverables, rebuilt with
+#   python -m src.reports.build_submission
+submission/

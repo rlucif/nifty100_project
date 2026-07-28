@@ -835,8 +835,9 @@ def _chapter_seven():
          'in sector listings is the Unclassified bucket.',
          '<b>119 duplicate company-year rows</b> exist in the source '
          'statements. Analytics de-duplicate before counting.',
-         '<b>Operating profit stands in for EBITDA</b>, because the '
-         'datasets carry no depreciation line.'
+         '<b>Operating profit is EBITDA by construction.</b> The source '
+         'P&amp;L reports operating profit before depreciation, confirmed '
+         'against the P&amp;L identity across 1,263 rows.'
       ]),
       Spacer(1, 3 * mm),
       Paragraph('Where to look next', STYLES['heading']),

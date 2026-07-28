@@ -12,8 +12,10 @@ else
     PYTHON ?= .venv/bin/python
 endif
 
-.PHONY: help load validate ratios audit screener peer valuation nlp \
-        cashflow tearsheets report dashboard api test clean all
+.PHONY: help load validate ratios audit indexes screener peer report \
+        nlp cashflow tearsheets cluster stats api openapi acceptance \
+        archive techdoc dailyreports submission valuation dashboard \
+        test testreport clean all
 
 help:
 	@echo "N100 Financial Intelligence Platform"
@@ -34,8 +36,12 @@ help:
 	@echo "  make indexes    Create SQLite indexes and benchmark them"
 	@echo "  make dashboard  Launch the Streamlit dashboard on :8501"
 	@echo "  make api        Launch the FastAPI server on :8000"
+	@echo "  make openapi    Export docs/openapi.json and list endpoints"
 	@echo "  make acceptance Run the 20 gates and build the checklist"
 	@echo "  make archive    Copy all 23 deliverables to output/"
+	@echo "  make techdoc    Build docs/technical_documentation.pdf"
+	@echo "  make dailyreports Build docs/daily_reports.pdf"
+	@echo "  make submission Build the six-file submission bundle"
 	@echo "  make test       Run the test suite"
 	@echo "  make testreport Run tests and write reports/pytest_report.html"
 	@echo "  make clean      Remove caches and test artifacts"
@@ -114,6 +120,15 @@ acceptance:
 
 archive:
 	$(PYTHON) -m src.reports.archive_deliverables
+
+techdoc:
+	$(PYTHON) -m src.reports.technical_documentation
+
+dailyreports:
+	$(PYTHON) -m src.reports.daily_reports
+
+submission: techdoc dailyreports
+	$(PYTHON) -m src.reports.build_submission
 
 testreport:
 	$(PYTHON) -m pytest tests/ -q --html=reports/pytest_report.html --self-contained-html

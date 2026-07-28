@@ -83,12 +83,20 @@ def create_indexes(connection):
 
 
 def benchmark_query(connection, sql, params=(), repeats=50):
-   # Median elapsed milliseconds over a number of runs.
+   # Median elapsed milliseconds over a number of runs, or None if the
+   # query cannot run yet.
+   #
+   # This target may be invoked on a freshly loaded database, before the
+   # screener has built peer_percentiles. A benchmark is diagnostic
+   # output, so a missing table must not stop the indexes being created.
    timings = []
 
    for _ in range(repeats):
       started = time.perf_counter()
-      connection.execute(sql, params).fetchall()
+      try:
+         connection.execute(sql, params).fetchall()
+      except sqlite3.OperationalError:
+         return None
       timings.append((time.perf_counter() - started) * 1000)
 
    timings.sort()
@@ -144,6 +152,10 @@ def main():
       print()
       print(f'{"query":34}{"before":>10}{"after":>10}{"change":>10}')
       for label in benchmarks:
+         if before[label] is None or after[label] is None:
+            print(f'{label:34}{"table not built yet":>29}')
+            continue
+
          change = (
             (after[label] - before[label]) / before[label] * 100
             if before[label] else 0

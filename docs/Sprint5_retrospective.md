@@ -148,7 +148,7 @@ one charting approach across the project instead of two.
 | `prosandcons` was not usable as a source | It covers 16 companies, so all 519 statements are generated from financial rules rather than the supplied text |
 | CON-09 never fires | No company shows EPS declining across 3 strictly consecutive years. The rule is correct and simply does not apply to this dataset |
 | The cashflow table holds 100 tickers | 8 more than the platform universe. Without a filter the intelligence report ran to 100 rows with 8 unclassified, so it is now restricted to the 92 companies that survived the Sprint 2 statement joins |
-| Operating profit stands in for EBITDA | The supplied datasets carry no depreciation line. Recorded on the Notes sheet |
+| Operating profit is used as EBITDA | Correct, but the original justification was wrong. It was recorded as "the datasets carry no depreciation line"; in fact `profitandloss.depreciation` is fully populated across all 1,276 rows. The right reason is that the source P&L reports operating profit *before* depreciation, so it is EBITDA by construction. Verified against the identity `operating profit + other income − interest − depreciation = profit before tax`, which holds with a median residual of 1.0 across 1,263 rows against 1,317 for the post-depreciation reading. Corrected on Day 45 |
 | 11 sector PDFs, 10 real sectors | The eleventh is the Unclassified bucket holding the two tickers with no company master record |
 
 ---
