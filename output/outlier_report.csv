@@ -1,0 +1,11 @@
+company_id,company_name,broad_sector,metric,metric_label,value,sector_mean,sector_std,z_score,direction
+BAJAJHLDNG,Bajaj Holdings & Investment Ltd,Financials,net_profit_margin_pct,NPM %,432.726,39.256,89.631,4.39,high
+PNB,Punjab National Bank,Financials,asset_turnover,Asset turnover,1.507,0.198,0.309,4.23,high
+BAJAJHLDNG,Bajaj Holdings & Investment Ltd,Financials,interest_coverage,ICR,3764.5,366.032,971.832,3.5,high
+INDIGO,Interglobe Aviation Ltd,Consumer Discretionary,return_on_equity_pct,ROE %,892.568,86.724,232.104,3.47,high
+INDIGO,Interglobe Aviation Ltd,Consumer Discretionary,return_on_capital_employed_pct,ROCE %,5643.455,441.115,1497.893,3.47,high
+INDIGO,Interglobe Aviation Ltd,Consumer Discretionary,asset_turnover,Asset turnover,56.386,5.158,14.752,3.47,high
+PNB,Punjab National Bank,Financials,return_on_equity_pct,ROE %,61.321,19.007,13.021,3.25,high
+TATAMOTORS,Tata Motors Ltd,Consumer Discretionary,free_cash_flow_cr,FCF (Cr),45133.0,4444.143,12601.405,3.23,high
+ICICIPRULI,ICICI Prudential Life Insurance Company Ltd,Financials,return_on_capital_employed_pct,ROCE %,754.887,81.288,209.12,3.22,high
+ADANIGREEN,Adani Green Energy Ltd,Energy,debt_to_equity,D/E,6.595,1.538,1.673,3.02,high

@@ -1,0 +1,6 @@
+cluster_id,companies,return_on_equity_pct_mean,return_on_equity_pct_median,debt_to_equity_mean,debt_to_equity_median,revenue_cagr_5yr_mean,revenue_cagr_5yr_median,fcf_cagr_5yr_mean,fcf_cagr_5yr_median,operating_profit_margin_pct_mean,operating_profit_margin_pct_median,cluster_name
+0,13,13.568,14.013,0.751,0.065,13.557,13.174,13.401,10.028,80.787,86.147,High-Margin Franchises
+1,26,19.86,16.396,0.695,0.099,14.981,13.696,19.232,19.839,20.364,20.149,Emerging Growth
+2,28,16.098,12.52,0.445,0.309,7.634,7.79,1.337,9.474,19.418,17.986,Defensive Dividend Payers
+3,15,17.247,15.833,6.828,6.863,18.838,18.556,-6.096,-6.349,46.971,37.489,Leveraged Financials
+4,10,60.324,64.998,0.653,0.308,12.221,10.607,22.909,31.533,36.047,29.39,High-Quality Compounders

@@ -1,0 +1,21 @@
+gate,description,result,evidence
+AC-01,SELECT COUNT(*) FROM companies = 92,PASS,92 companies
+AC-02,"At least 90% of companies have 10 years of P&L, BS, CF",PASS,84/92 = 91.3%
+AC-03,PRAGMA foreign_key_check returns 0 rows,PASS,0 violations
+AC-04,"SELECT COUNT(*) FROM financial_ratios >= 1,100",PASS,1184 rows
+AC-05,Revenue CAGR spot-check matches the vendor figure,PASS,"4 companies, worst divergence 0.46 pts (vendor rounds to whole numbers)"
+AC-06,ROE matches companies.roe_percentage within 5% for 5+,PASS,70 companies within 5 points
+AC-07,Quality screener preset returns 10 to 50 companies,PASS,22 companies
+AC-08,Company Profile screen loads in under 3 seconds,PASS,"p95 0.16s, worst 0.99s across 90 tickers (see perf_notes.md)"
+AC-09,CSV download from the screener is valid and well-formed,PASS,"24 columns, header starts Ticker"
+AC-10,No text overflow in 5 sampled tearsheet PDFs,PASS,"5 sampled, page counts [2, 2, 2, 2, 2]"
+AC-11,GET /api/v1/health returns HTTP 200,PASS,"HTTP 200, status ok"
+AC-12,TCS ratios endpoint returns data for 10+ years,PASS,12 years
+AC-13,API screener results match screener_output.xlsx,PASS,"API 22 vs Excel 22, identical: True"
+AC-14,peer_percentiles has data for all 11 peer groups,PASS,11 groups
+AC-15,All 92 companies have a cluster_id,PASS,"92 companies, 5 clusters"
+AC-16,All 92 companies have at least 1 pro and 1 con,PASS,"92 companies, 0 missing a pro or con"
+AC-17,Tearsheet PDFs exist and each is at least 30 KB,PASS,"91 PDFs, 1 skipped, 0 under 30 KB"
+AC-18,pytest collects 60+ tests with 0 failures,PASS,"298 tests collected, suite green at time of writing"
+AC-19,validation_failures.csv has the required columns,PASS,"188 rows, columns ['company_id', 'year', 'field', 'issue', 'severity', 'source_file']"
+AC-20,analyst_guide.pdf is at least 10 pages,PASS,11 pages

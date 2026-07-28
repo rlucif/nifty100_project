@@ -1,0 +1,93 @@
+company_id,cluster_id,cluster_name,distance_from_centroid
+ABB,1,Emerging Growth,1.3045
+ADANIENSOL,1,Emerging Growth,1.3728
+ADANIENT,1,Emerging Growth,1.3384
+ADANIGREEN,3,Leveraged Financials,1.9218
+ADANIPORTS,0,High-Margin Franchises,1.9444
+ADANIPOWER,4,High-Quality Compounders,1.0919
+AMBUJACEM,2,Defensive Dividend Payers,0.6091
+APOLLOHOSP,1,Emerging Growth,0.5709
+ASIANPAINT,1,Emerging Growth,0.7335
+AXISBANK,3,Leveraged Financials,1.0165
+BAJAJ-AUTO,1,Emerging Growth,1.285
+BAJAJFINSV,3,Leveraged Financials,1.1058
+BAJAJHLDNG,0,High-Margin Franchises,2.0033
+BAJFINANCE,3,Leveraged Financials,1.6597
+BANKBARODA,3,Leveraged Financials,0.7375
+BEL,4,High-Quality Compounders,0.9045
+BHARTIARTL,0,High-Margin Franchises,1.3677
+BHEL,2,Defensive Dividend Payers,2.1983
+BOSCHLTD,2,Defensive Dividend Payers,0.7134
+BPCL,2,Defensive Dividend Payers,1.4347
+BRITANNIA,4,High-Quality Compounders,1.4387
+CANBK,3,Leveraged Financials,0.6344
+CHOLAFIN,3,Leveraged Financials,0.9034
+CIPLA,0,High-Margin Franchises,1.7821
+COALINDIA,4,High-Quality Compounders,1.8831
+DABUR,2,Defensive Dividend Payers,0.7183
+DIVISLAB,1,Emerging Growth,1.2632
+DLF,2,Defensive Dividend Payers,1.5114
+DMART,1,Emerging Growth,1.2579
+DRREDDY,2,Defensive Dividend Payers,1.6267
+EICHERMOT,2,Defensive Dividend Payers,0.7629
+GAIL,1,Emerging Growth,0.8589
+GODREJCP,2,Defensive Dividend Payers,0.8638
+GRASIM,1,Emerging Growth,1.1798
+HAL,4,High-Quality Compounders,0.9692
+HAVELLS,2,Defensive Dividend Payers,1.3059
+HCLTECH,1,Emerging Growth,0.5349
+HDFCBANK,3,Leveraged Financials,0.7913
+HDFCLIFE,0,High-Margin Franchises,1.7828
+HEROMOTOCO,0,High-Margin Franchises,2.0582
+HINDALCO,0,High-Margin Franchises,0.7082
+HINDUNILVR,0,High-Margin Franchises,0.8626
+ICICIBANK,3,Leveraged Financials,0.6819
+ICICIGI,0,High-Margin Franchises,1.1674
+ICICIPRULI,0,High-Margin Franchises,2.1654
+INDIGO,4,High-Quality Compounders,2.3125
+INDUSINDBK,3,Leveraged Financials,0.679
+INFY,1,Emerging Growth,1.0121
+IOC,2,Defensive Dividend Payers,0.8938
+IRCTC,1,Emerging Growth,1.5214
+IRFC,3,Leveraged Financials,1.8061
+ITC,1,Emerging Growth,1.4731
+JINDALSTEL,2,Defensive Dividend Payers,1.1136
+JIOFIN,0,High-Margin Franchises,1.4618
+JSWENERGY,2,Defensive Dividend Payers,1.4959
+JSWSTEEL,1,Emerging Growth,0.7867
+KOTAKBANK,0,High-Margin Franchises,1.7243
+LICI,2,Defensive Dividend Payers,2.5042
+LODHA,2,Defensive Dividend Payers,1.3862
+LT,4,High-Quality Compounders,1.2195
+LTIM,1,Emerging Growth,1.6095
+M&M,2,Defensive Dividend Payers,0.7706
+MARUTI,2,Defensive Dividend Payers,0.7594
+MOTHERSON,2,Defensive Dividend Payers,0.5862
+NAUKRI,1,Emerging Growth,1.2108
+NESTLEIND,4,High-Quality Compounders,1.3569
+NHPC,2,Defensive Dividend Payers,1.9452
+NTPC,1,Emerging Growth,0.855
+ONGC,2,Defensive Dividend Payers,0.6055
+PFC,3,Leveraged Financials,1.5894
+PIDILITIND,1,Emerging Growth,0.6448
+PNB,4,High-Quality Compounders,2.1722
+POWERGRID,0,High-Margin Franchises,2.0798
+RECLTD,3,Leveraged Financials,1.9419
+RELIANCE,2,Defensive Dividend Payers,0.8297
+SBILIFE,1,Emerging Growth,2.256
+SHREECEM,2,Defensive Dividend Payers,0.7642
+SHRIRAMFIN,3,Leveraged Financials,1.3357
+SIEMENS,1,Emerging Growth,1.4727
+SUNPHARMA,1,Emerging Growth,1.5255
+TATACONSUM,2,Defensive Dividend Payers,2.0079
+TATAMOTORS,2,Defensive Dividend Payers,1.4745
+TATAPOWER,1,Emerging Growth,1.439
+TATASTEEL,2,Defensive Dividend Payers,0.9672
+TCS,4,High-Quality Compounders,1.0484
+TECHM,2,Defensive Dividend Payers,1.0939
+TITAN,1,Emerging Growth,1.64
+TORNTPHARM,2,Defensive Dividend Payers,1.0456
+TRENT,1,Emerging Growth,1.9577
+TVSMOTOR,1,Emerging Growth,1.4389
+ULTRACEMCO,2,Defensive Dividend Payers,1.489
+UNIONBANK,3,Leveraged Financials,2.0453
