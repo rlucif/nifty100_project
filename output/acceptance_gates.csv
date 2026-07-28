@@ -16,6 +16,6 @@ AC-14,peer_percentiles has data for all 11 peer groups,PASS,11 groups
 AC-15,All 92 companies have a cluster_id,PASS,"92 companies, 5 clusters"
 AC-16,All 92 companies have at least 1 pro and 1 con,PASS,"92 companies, 0 missing a pro or con"
 AC-17,Tearsheet PDFs exist and each is at least 30 KB,PASS,"91 PDFs, 1 skipped, 0 under 30 KB"
-AC-18,pytest collects 60+ tests with 0 failures,PASS,"309 tests collected, suite green at time of writing"
+AC-18,pytest collects 60+ tests with 0 failures,PASS,"311 tests collected, suite green at time of writing"
 AC-19,validation_failures.csv has the required columns,PASS,"188 rows, columns ['company_id', 'year', 'field', 'issue', 'severity', 'source_file']"
 AC-20,analyst_guide.pdf is at least 10 pages,PASS,11 pages
