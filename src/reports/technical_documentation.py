@@ -36,6 +36,30 @@ from reportlab.platypus import (
 DB_PATH = 'data/nifty100.db'
 OUTPUT_PATH = 'docs/technical_documentation.pdf'
 
+
+def collect_test_count():
+   '''Number of tests pytest can collect, so the figure is never stale.'''
+   import re
+   import subprocess
+   import sys
+
+   try:
+      result = subprocess.run(
+         [sys.executable, '-m', 'pytest', 'tests/', '--collect-only', '-q'],
+         capture_output=True, text=True, timeout=300
+      )
+      match = re.search(r'(\d+)\s+tests? collected', result.stdout)
+      if match:
+         return int(match.group(1))
+   except Exception:
+      pass
+
+   return None
+
+
+TEST_COUNT = collect_test_count()
+TEST_COUNT_TEXT = f'{TEST_COUNT} tests' if TEST_COUNT else 'the test suite'
+
 NAVY = colors.HexColor('#1F3864')
 GREEN = colors.HexColor('#2E7D32')
 RED = colors.HexColor('#C00000')
@@ -218,16 +242,150 @@ def _cover():
       Paragraph(
          '92 companies &nbsp;|&nbsp; 14 tables &nbsp;|&nbsp; '
          '30+ KPIs &nbsp;|&nbsp; 20 API endpoints<br/>'
-         '308 tests &nbsp;|&nbsp; 23 deliverables &nbsp;|&nbsp; '
+         f'{TEST_COUNT_TEXT} &nbsp;|&nbsp; 23 deliverables &nbsp;|&nbsp; '
          '20 of 20 acceptance gates',
          STYLES['cover_sub']
       ),
-      Spacer(1, 22 * mm),
+      Spacer(1, 14 * mm),
+      Paragraph(
+         '<b>Reviewers: chapter 0 explains how the six form uploads fit '
+         'together<br/>and how to get the project running.</b>',
+         STYLES['cover_sub']
+      ),
+      Spacer(1, 14 * mm),
       Paragraph(
          f'Version 1.0 &nbsp;&bull;&nbsp; {date.today().isoformat()}<br/>'
          'Raj Sarania, Data Analyst<br/>'
          'Summer Internship Programme, Bluestock Fintech',
          STYLES['cover_sub']
+      )
+   ]
+
+
+def _chapter_submission():
+   '''How the submission is packaged. First chapter deliberately.
+
+   The submission form has six slots and no room for a covering note, so
+   this page is where a reviewer is told how the six uploads fit together
+   and how to get the project running.
+   '''
+   return [
+      Paragraph('0. About this submission', STYLES['chapter']),
+      Paragraph(
+         'Read this first. It explains how the six uploads fit together.',
+         STYLES['caption']
+      ),
+      _p(
+         'This project was submitted through a form with six slots: three '
+         'source code archives, a database archive and two PDF documents. '
+         '<b>The complete project is the union of all six uploads.</b> No '
+         'single upload is the whole thing.'
+      ),
+      _table(
+         ['Form slot', 'What it contains'],
+         [
+            ['1. Source Code (Frontend)',
+             'The Streamlit dashboard: entry point, all 8 screens, cached '
+             'data loader. Also carries the 92 radar chart PNGs used by '
+             'the peer views'],
+            ['2. Source Code (Backend)',
+             'The analytics engine: ETL, ratio engine, screener, NLP rule '
+             'engine, clustering, statistics and report generators. Also '
+             'carries the generated Excel workbooks, the 91 company '
+             'tearsheets, 11 sector reports and the portfolio summary'],
+            ['3. Source Code (RestAPI)',
+             'The FastAPI application: 20 endpoints across 7 routers, the '
+             'OpenAPI 3.1 specification and the full test report'],
+            ['4. Database SQL File',
+             'The DDL schema, the populated SQLite database, all 12 source '
+             'Excel workbooks so the database can be rebuilt from '
+             'scratch, exploratory queries and the load and validation '
+             'audit trail'],
+            ['5. Technical Documentation',
+             'This document: architecture, data model, formulas, algorithm '
+             'designs, API contract, test strategy and known limitations'],
+            ['6. Daily Reports',
+             'The project progress record: 9 day-level logs and 6 sprint '
+             'retrospectives, with a coverage map stating which days are '
+             'recorded at which level']
+         ],
+         widths=[42 * mm, CONTENT_WIDTH - 42 * mm]
+      ),
+      Spacer(1, 4 * mm),
+      _callout(
+         'Why the segmentation looks unusual',
+         'The form is shaped for a conventional web application with a '
+         'separate frontend, backend and API. This project is a Python '
+         'analytics platform, so the mapping is: the Streamlit dashboard '
+         'is the frontend, the ETL and analytics engine is the backend, '
+         'and FastAPI is the API. The form also has no slot for the 23 '
+         'tracked deliverables, so each one is attached to the segment '
+         'that produces or displays it. Every archive contains a '
+         'MANIFEST.txt naming the other five uploads.',
+         NAVY
+      ),
+      Spacer(1, 4 * mm),
+      Paragraph('Getting it running in five minutes', STYLES['heading']),
+      _p(
+         'Extract all four archives into one directory. Each archive has a '
+         'single top-level folder; merge their contents so that '
+         '<font face="Courier">src/</font>, '
+         '<font face="Courier">data/</font>, '
+         '<font face="Courier">config/</font> and '
+         '<font face="Courier">tests/</font> sit side by side. Then:'
+      ),
+      _code([
+         'pip install -r requirements.txt',
+         '',
+         '# the database ships populated, so start here:',
+         f'python -m pytest -q                     # {TEST_COUNT_TEXT}',
+         'streamlit run src/dashboard/app.py      # dashboard on :8501',
+         'uvicorn src.api.main:app --port 8000    # API on :8000, /docs',
+         '',
+         '# or rebuild everything from the source Excel workbooks:',
+         'python -m src.etl.sqlite_loader         # 12 tables, 12,892 rows',
+         'python -m src.etl.ratio_engine          # 1,184 KPI rows',
+         'python -m src.screener.run_screener     # screener + peer ranks',
+         '',
+         '# a Makefile wraps every step:  make help'
+      ]),
+      _p(
+         'This sequence was verified by extracting the four archives into '
+         'an empty directory, deleting the shipped database and rebuilding '
+         f'from the Excel workbooks: {TEST_COUNT_TEXT} pass and all 20 acceptance '
+         'gates hold. Python 3.12 or newer is required.'
+      ),
+      Paragraph('Where to look for what', STYLES['heading']),
+      _table(
+         ['Question', 'Answer'],
+         [
+            ['Is it complete and correct?',
+             'docs/acceptance_checklist.pdf, 20 gates with evidence'],
+            ['How do I use the platform?',
+             'docs/analyst_guide.pdf, an 11 page user manual'],
+            ['How does it work internally?',
+             'This document, chapters 1 to 8'],
+            ['What was built when, and why?',
+             'Upload 6, and docs/Sprint1..6_retrospective.md'],
+            ['What does the test suite cover?',
+             'reports/pytest_report.html'],
+            ['Why does a ratio look odd?',
+             'output/ratio_edge_cases.log, every anomaly categorised'],
+            ['How fast is it?', 'output/perf_notes.md']
+         ],
+         widths=[52 * mm, CONTENT_WIDTH - 52 * mm]
+      ),
+      Spacer(1, 4 * mm),
+      _callout(
+         'Two things stated plainly up front',
+         'First: the market_cap and stock_prices datasets supplied with '
+         'this project are SIMULATED, so every P/E, P/B, EV/EBITDA, '
+         'dividend yield and market cap figure is illustrative rather than '
+         'real market data. Second: the supplied companies.xlsx is '
+         'truncated at 92 rows, and several other source defects were '
+         'found during the build. All of them are documented in chapter 7 '
+         'rather than worked around silently.',
+         AMBER
       )
    ]
 
@@ -303,7 +461,7 @@ def _chapter_architecture():
              'charts, acceptance gates, deliverable archive'],
             ['src/dashboard/', 'Streamlit app, 8 screens, cached loader'],
             ['src/api/', 'FastAPI app, dependencies, 7 routers'],
-            ['tests/', '308 tests across etl, kpi, dq, analytics, '
+            ['tests/', f'{TEST_COUNT_TEXT} across etl, kpi, dq, analytics, '
              'screener, nlp, reports, dashboard, api']
          ],
          widths=[36 * mm, CONTENT_WIDTH - 36 * mm],
@@ -683,7 +841,7 @@ def _chapter_quality():
    return [
       Paragraph('6. Test strategy and performance', STYLES['chapter']),
       Paragraph(
-         '308 tests, zero warnings, 20 of 20 acceptance gates.',
+         f'{TEST_COUNT_TEXT}, zero warnings, 20 of 20 acceptance gates.',
          STYLES['caption']
       ),
       _table(
@@ -866,7 +1024,7 @@ def _chapter_operations():
          'make stats       # heatmap, outliers, percentiles',
          'make tearsheets  # 91 company PDFs, 11 sector, portfolio',
          'make acceptance  # analyst guide + 20 gates + checklist',
-         'make test        # 308 tests',
+         f'make test        # {TEST_COUNT_TEXT}',
          '',
          '# or the whole chain in dependency order',
          'make all'
@@ -961,6 +1119,7 @@ def build_document(output_path=OUTPUT_PATH):
    )
 
    chapters = [
+      _chapter_submission(),
       _chapter_architecture(),
       _chapter_data_model(tables),
       _chapter_formulas(),
