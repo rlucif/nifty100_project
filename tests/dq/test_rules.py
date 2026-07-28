@@ -123,7 +123,6 @@ def test_dq_rule_08_unexpected_columns_flagged():
 
 # Rules 9-14: delivered database integrity
 def test_dq_rule_09_financial_ratios_row_count(financial_ratios):
-   # Sprint 2 exit criterion: at least 1,100 company-year rows.
    assert len(financial_ratios) >= MINIMUM_RATIO_ROWS
 
 
